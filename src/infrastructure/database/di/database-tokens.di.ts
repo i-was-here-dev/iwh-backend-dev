@@ -1,3 +1,3 @@
 export class DatabaseDiTokens {
-    public static readonly PostgresDataSource: string = 'PostgresDataSource';
+  public static readonly PostgresDataSource: string = 'PostgresDataSource';
 }
