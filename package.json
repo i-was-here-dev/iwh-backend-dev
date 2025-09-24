@@ -77,6 +77,12 @@
     "testEnvironment": "node"
   },
   "lint-staged": {
-    "*.js": "eslint --cache --fix"
+    "*.{ts,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
   }
 }
