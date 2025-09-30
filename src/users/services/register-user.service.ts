@@ -3,12 +3,12 @@ import { UserRepositoryInterface } from '../repositories/user-repository.interfa
 import {
   createRegisterUserPort,
   createRegisterUserUseCase,
-} from './usecases/create-register-user.usecase';
+} from './usecases/register-user.usecase';
 
 export class createRegisterUserService implements createRegisterUserUseCase {
   constructor(private readonly userRepository: UserRepositoryInterface) {}
 
-  async execute(payload: createRegisterUserPort): Promise<void> {
+  async execute(payload: createRegisterUserPort): Promise<User> {
     const { email, username, password } = payload;
     const user = new User();
     user.email = email;
@@ -16,5 +16,6 @@ export class createRegisterUserService implements createRegisterUserUseCase {
     user.password = password;
 
     await this.userRepository.save(user);
+    return user;
   }
 }

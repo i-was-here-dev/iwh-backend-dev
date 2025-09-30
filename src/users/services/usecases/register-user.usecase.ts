@@ -1,3 +1,4 @@
+import { User } from 'src/users/entities/user.entity';
 import { UseCase } from 'src/common/usecase.common';
 
 export type createRegisterUserPort = {
@@ -7,4 +8,4 @@ export type createRegisterUserPort = {
 };
 
 export interface createRegisterUserUseCase
-  extends UseCase<createRegisterUserPort, void> {}
+  extends UseCase<createRegisterUserPort, User> {}
