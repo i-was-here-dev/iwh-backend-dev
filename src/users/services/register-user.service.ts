@@ -1,14 +1,14 @@
 import { User } from '../entities/user.entity';
 import { UserRepositoryInterface } from '../repositories/user-repository.interface';
 import {
-  createRegisterUserPort,
-  createRegisterUserUseCase,
+  RegisterUserPort,
+  RegisterUserUseCase,
 } from './usecases/register-user.usecase';
 
-export class createRegisterUserService implements createRegisterUserUseCase {
+export class RegisterUserService implements RegisterUserUseCase {
   constructor(private readonly userRepository: UserRepositoryInterface) {}
 
-  async execute(payload: createRegisterUserPort): Promise<User> {
+  async execute(payload: RegisterUserPort): Promise<User> {
     const { email, username, password } = payload;
     const user = new User();
     user.email = email;
