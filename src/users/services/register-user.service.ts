@@ -15,7 +15,6 @@ export class RegisterUserService implements RegisterUserUseCase {
     user.username = username;
     user.password = password;
 
-    await this.userRepository.save(user);
-    return user;
+    return await this.userRepository.save(user);
   }
 }
