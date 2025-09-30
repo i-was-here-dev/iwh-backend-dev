@@ -14,7 +14,7 @@ export class FindUserByEmailService implements FindUserByEmailUseCase {
 
     const user: User | null = await this.userRepository.findByEmail(email);
 
-    if (user == null) throw new NotFoundException();
+    if (!user) throw new NotFoundException();
 
     return user;
   }
