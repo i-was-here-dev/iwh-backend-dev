@@ -1,3 +1,4 @@
+import { ConflictException } from '@nestjs/common';
 import { User } from '../entities/user.entity';
 import { UserRepositoryInterface } from '../repositories/user-repository.interface';
 import {
@@ -11,6 +12,14 @@ export class RegisterUserService implements RegisterUserUseCase {
 
   async execute(payload: RegisterUserPort): Promise<User> {
     const { email, username, password } = payload;
+
+    if (await this.userRepository.findByEmail(email)) {
+      throw new ConflictException('email already exists');
+    }
+
+    if (await this.userRepository.findByUsername(username)) {
+      throw new ConflictException('username already exists');
+    }
 
     const user = new User();
     user.email = email;
