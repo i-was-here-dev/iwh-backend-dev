@@ -6,7 +6,7 @@ import {
   ValidateUserUseCase,
 } from 'src/auth/services/usecases/validate-user.usecase';
 import * as bcrypt from 'bcrypt';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 
 export class ValidateUserService implements ValidateUserUseCase {
   constructor(
@@ -14,33 +14,28 @@ export class ValidateUserService implements ValidateUserUseCase {
     private readonly findUserByEmailService: FindUserByEmailUseCase,
   ) {}
 
-  async execute(payload: ValidateUserPort): Promise<User | null> {
+  async execute(payload: ValidateUserPort): Promise<User> {
     const { identifier, password } = payload;
 
-    const user = await this.getUserByIdentifier(identifier);
+    const user: User | null = await this.getUserByIdentifier(identifier);
 
-    if (user && (await bcrypt.compare(password, user.password))) {
+    if (!user) throw new NotFoundException();
+
+    if (await bcrypt.compare(password, user.password)) {
       return user;
     }
 
-    return null;
+    throw new UnauthorizedException();
   }
 
   private async getUserByIdentifier(identifier: string): Promise<User | null> {
-    try {
-      if (this.isEmail(identifier)) {
-        return await this.findUserByEmailService.execute({ email: identifier });
-      } else {
-        return await this.findUserByUsernameService.execute({
-          username: identifier,
-        });
-      }
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        return null;
-      }
-      throw error;
+    if (this.isEmail(identifier)) {
+      return await this.findUserByEmailService.execute({ email: identifier });
     }
+
+    return await this.findUserByUsernameService.execute({
+      username: identifier,
+    });
   }
 
   private isEmail(identifier: string): boolean {

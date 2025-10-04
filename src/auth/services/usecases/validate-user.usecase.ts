@@ -6,5 +6,4 @@ export type ValidateUserPort = {
   password: string;
 };
 
-export interface ValidateUserUseCase
-  extends UseCase<ValidateUserPort, User | null> {}
+export interface ValidateUserUseCase extends UseCase<ValidateUserPort, User> {}
