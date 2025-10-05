@@ -30,6 +30,6 @@ export class UserController {
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
       deletedAt: user.deletedAt,
-    } as RegisterUserResponseDto;
+    };
   }
 }

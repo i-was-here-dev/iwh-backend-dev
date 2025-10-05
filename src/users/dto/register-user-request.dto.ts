@@ -7,6 +7,7 @@ export class RegisterUserRequestDto {
   @IsNotEmpty()
   username: string;
 
+  @IsNotEmpty()
   @MinLength(8)
   @Matches(/[A-Z]/)
   @Matches(/[0-9]/)
