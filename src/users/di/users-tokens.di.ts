@@ -1,4 +1,4 @@
-export class UserDiTokens {
+export class UsersDiTokens {
   public static readonly UserRepositoryInterface: string =
     'UserRepositoryInterface';
 

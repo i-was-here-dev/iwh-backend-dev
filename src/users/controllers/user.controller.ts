@@ -1,22 +1,27 @@
 import { Controller, Inject, Post, Body } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { UserDiTokens } from '../di/user-tokens.di';
+import { UsersDiTokens } from '../di/users-tokens.di';
 import { RegisterUserService } from '../services/register-user.service';
 import { RegisterUserPort } from '../services/usecases/register-user.usecase';
+import { RegisterUserResponseDto } from '../dto/register-user-response.dto';
 
-@ApiTags('Users')
 @Controller('users')
 export class UserController {
   constructor(
-    @Inject(UserDiTokens.RegisterUserService)
+    @Inject(UsersDiTokens.RegisterUserService)
     private readonly registerUserService: RegisterUserService,
   ) {}
 
-  @Post('register')
-  @ApiOperation({ summary: 'Register a new user' })
-  @ApiResponse({ status: 201, description: 'User registered successfully' })
-  async register(@Body() payload: RegisterUserPort) {
+  @Post()
+  async register(
+    @Body() payload: RegisterUserPort,
+  ): Promise<RegisterUserResponseDto> {
     const user = await this.registerUserService.execute(payload);
-    return { message: 'User registered successfully!', user };
+
+    const response = new RegisterUserResponseDto();
+    response.username = user.username;
+    response.email = user.email;
+    response.createdAt = user.createdAt;
+    response.updatedAt = user.createdAt;
+    return response;
   }
 }
