@@ -1,10 +1,7 @@
 import { ConflictException } from '@nestjs/common';
 import { User } from '../entities/user.entity';
 import { UserRepositoryInterface } from '../repositories/user-repository.interface';
-import {
-  RegisterUserPort,
-  RegisterUserUseCase,
-} from './usecases/register-user.usecase';
+import { RegisterUserPort, RegisterUserUseCase } from './usecases/register-user.usecase';
 import * as bcrypt from 'bcrypt';
 
 export class RegisterUserService implements RegisterUserUseCase {

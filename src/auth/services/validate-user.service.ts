@@ -1,10 +1,7 @@
 import { FindUserByUsernameUseCase } from 'src/users/services/usecases/find-user-by-username.usecase';
 import { FindUserByEmailUseCase } from 'src/users/services/usecases/find-user-by-email.usecase';
 import { User } from 'src/users/entities/user.entity';
-import {
-  ValidateUserPort,
-  ValidateUserUseCase,
-} from 'src/auth/services/usecases/validate-user.usecase';
+import { ValidateUserPort, ValidateUserUseCase } from 'src/auth/services/usecases/validate-user.usecase';
 import * as bcrypt from 'bcrypt';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 

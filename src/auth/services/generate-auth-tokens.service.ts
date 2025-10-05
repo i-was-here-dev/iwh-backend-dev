@@ -1,8 +1,5 @@
 import { JwtService } from '@nestjs/jwt';
-import {
-  GenerateAuthTokensPort,
-  GenerateAuthTokensUseCase,
-} from './usecases/generate-auth-tokens.usecase';
+import { GenerateAuthTokensPort, GenerateAuthTokensUseCase } from './usecases/generate-auth-tokens.usecase';
 import { JwtTokens } from '../types/jwt-tokens.type';
 
 export class GenerateAuthTokensService implements GenerateAuthTokensUseCase {
@@ -15,10 +12,7 @@ export class GenerateAuthTokensService implements GenerateAuthTokensUseCase {
         email: payload.email,
         sub: payload.userId,
       }),
-      refresh_token: this.jwtService.sign(
-        { sub: payload.userId },
-        { expiresIn: '7d' },
-      ),
+      refresh_token: this.jwtService.sign({ sub: payload.userId }, { expiresIn: '7d' }),
     };
   }
 }

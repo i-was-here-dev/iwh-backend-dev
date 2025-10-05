@@ -7,5 +7,4 @@ export type GenerateAuthTokensPort = {
   userId: number;
 };
 
-export interface GenerateAuthTokensUseCase
-  extends UseCase<GenerateAuthTokensPort, JwtTokens> {}
+export interface GenerateAuthTokensUseCase extends UseCase<GenerateAuthTokensPort, JwtTokens> {}
