@@ -35,4 +35,12 @@ export default tseslint.config(
       '@typescript-eslint/no-empty-object-type': 'off',
     },
   },
+  {
+    files: [
+      '**/auth/services/generate-auth-tokens.service.ts',
+    ],
+    rules: {
+      '@typescript-eslint/require-await': 'off',
+    }
+  }
 );
