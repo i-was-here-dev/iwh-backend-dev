@@ -37,6 +37,7 @@ export default tseslint.config(
   },
   {
     files: [
+      '**/auth/strategies/jwt.strategy.ts',
       '**/auth/services/generate-auth-tokens.service.ts',
     ],
     rules: {
