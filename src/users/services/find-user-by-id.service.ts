@@ -9,7 +9,7 @@ export class FindUserByIdService implements FindUserByIdUseCase {
   async execute(payload: FindUserByIdPort): Promise<User> {
     const { id } = payload;
 
-    const user: User = await this.userRepository.findById(id);
+    const user: User | null = await this.userRepository.findById(id);
     if (!user) throw new NotFoundException();
 
     return user;
