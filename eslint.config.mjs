@@ -39,6 +39,7 @@ export default tseslint.config(
     files: [
       '**/auth/strategies/jwt.strategy.ts',
       '**/auth/services/generate-auth-tokens.service.ts',
+      '**/auth/strategies/refresh-token.strategy.ts'
     ],
     rules: {
       '@typescript-eslint/require-await': 'off',
