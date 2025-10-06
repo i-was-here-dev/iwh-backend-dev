@@ -1,4 +1,4 @@
-import { Controller, Inject, Post, Body, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Inject, Post, Body } from '@nestjs/common';
 import { UsersDiTokens } from '../di/users-tokens.di';
 import { RegisterUserUseCase } from '../services/usecases/register-user.usecase';
 import { RegisterUserResponseDto } from '../dto/register-user-response.dto';
@@ -13,7 +13,6 @@ export class UserController {
   ) {}
 
   @Post()
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   async register(@Body() dto: RegisterUserRequestDto): Promise<RegisterUserResponseDto> {
     const payload = {
       email: dto.email.toLowerCase(),
