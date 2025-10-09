@@ -7,6 +7,7 @@ import { User } from './entities/user.entity';
 import { DatabaseDiTokens } from 'src/infrastructure/database/di/database-tokens.di';
 import { UserRepository } from './repositories/postgres/user.repository';
 import { FindUserByUsernameService } from './services/find-user-by-username.service';
+import { FindUserByUuidService } from './services/find-user-by-uuid.service';
 import { RegisterUserService } from './services/register-user.service';
 import { UserController } from './controllers/user.controller';
 
@@ -37,6 +38,11 @@ const serviceProvider: Array<Provider> = [
   {
     provide: UsersDiTokens.RegisterUserService,
     useFactory: (userRepository: UserRepositoryInterface) => new RegisterUserService(userRepository),
+    inject: [UsersDiTokens.UserRepositoryInterface],
+  },
+  {
+    provide: UsersDiTokens.FindUserByUuidService,
+    useFactory: (userRepository: UserRepositoryInterface) => new FindUserByUuidService(userRepository),
     inject: [UsersDiTokens.UserRepositoryInterface],
   },
 ];
