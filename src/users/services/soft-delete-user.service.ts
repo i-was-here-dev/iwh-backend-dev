@@ -1,16 +1,15 @@
-import { Injectable } from '@nestjs/common';
 import { User } from '../entities/user.entity';
-import { DataSource, Repository, UpdateResult } from 'typeorm';
+import { UserRepositoryInterface } from '../repositories/user-repository.interface';
+import { SoftDeleteUserPort, SoftDeleteUserUsecase } from './usecases/soft-delete-user.usecase';
 
-@Injectable()
-export class UserService {
-  private readonly repository: Repository<User>;
+export class SoftDeleteUserService implements SoftDeleteUserUsecase {
+  constructor(private readonly userRepository: UserRepositoryInterface) {}
 
-  constructor(private readonly dataSource: DataSource) {
-    this.repository = this.dataSource.getRepository(User);
-  }
-  async softDelete(userId: number): Promise<boolean> {
-    const result: UpdateResult = await this.repository.softDelete(userId);
-    return result.affected !== undefined && result.affected > 0;
+  async execute(payload: SoftDeleteUserPort): Promise<boolean> {
+    const { id } = payload;
+
+    const user: User | null = await this.userRepository.findById(id);
+
+    return await this.userRepository.softDelete(user);
   }
 }

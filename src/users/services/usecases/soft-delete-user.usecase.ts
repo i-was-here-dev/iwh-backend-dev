@@ -1,13 +1,7 @@
-import { Controller, Delete, Param, ParseIntPipe } from '@nestjs/common';
-import { UserService } from '../soft-delete-user.service';
+import { UseCase } from 'src/common/usecase.common';
 
-@Controller('users')
-export class UserController {
-  constructor(private readonly userService: UserService) {}
+export type SoftDeleteUserPort = {
+  id: number;
+};
 
-  @Delete(':id')
-  async softDelete(@Param('id', ParseIntPipe) id: number): Promise<{ success: boolean }> {
-    const success = await this.userService.softDelete(id);
-    return { success };
-  }
-}
+export interface SoftDeleteUserUsecase extends UseCase<SoftDeleteUserPort, boolean> {}
