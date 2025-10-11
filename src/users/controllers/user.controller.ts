@@ -2,7 +2,7 @@ import { Controller, Inject, Post, Body, Get, Param } from '@nestjs/common';
 import { User } from '../entities/user.entity';
 import { NotFoundException } from '@nestjs/common';
 import { UsersDiTokens } from '../di/users-tokens.di';
-import { RegisterUserUseCase } from '../services/usecases/register-user.usecase';
+import { SaveUserUseCase } from '../services/usecases/save-user.usecase';
 import { RegisterUserResponseDto } from '../dto/register-user-response.dto';
 import { RegisterUserRequestDto } from '../dto/register-user-request.dto';
 import { FindUserByUuidPort, FindUserByUuidUseCase } from '../services/usecases/find-user-by-uuid.usecase';
@@ -11,8 +11,8 @@ import { FindUserByUuidResponseDto } from '../dto/find-user-by-uuid-response.dto
 @Controller('users')
 export class UserController {
   constructor(
-    @Inject(UsersDiTokens.RegisterUserService)
-    private readonly registerUserService: RegisterUserUseCase,
+    @Inject(UsersDiTokens.SaveUserService)
+    private readonly registerUserService: SaveUserUseCase,
     @Inject(UsersDiTokens.FindUserByUuidService)
     private readonly findUserByUuidService: FindUserByUuidUseCase,
   ) {}
