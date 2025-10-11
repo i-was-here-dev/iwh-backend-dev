@@ -40,9 +40,7 @@ export class UserController {
   @Get(':uuid')
   async findByUuid(@Param('uuid') uuid: string): Promise<FindUserByUuidResponseDto> {
     const payload: FindUserByUuidPort = { uuid };
-    const user: User | null = await this.findUserByUuidService.execute(payload);
-
-    if (!user) throw new NotFoundException();
+    const user: User = await this.findUserByUuidService.execute(payload);
 
     return {
       uuid: user.uuid,
