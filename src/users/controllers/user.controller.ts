@@ -1,15 +1,20 @@
-import { Controller, Inject, Post, Body } from '@nestjs/common';
+import { Controller, Inject, Post, Body, Get, Param } from '@nestjs/common';
+import { User } from '../entities/user.entity';
+import { NotFoundException } from '@nestjs/common';
 import { UsersDiTokens } from '../di/users-tokens.di';
 import { RegisterUserUseCase } from '../services/usecases/register-user.usecase';
 import { RegisterUserResponseDto } from '../dto/register-user-response.dto';
-import { User } from '../entities/user.entity';
 import { RegisterUserRequestDto } from '../dto/register-user-request.dto';
+import { FindUserByUuidPort, FindUserByUuidUseCase } from '../services/usecases/find-user-by-uuid.usecase';
+import { FindUserByUuidResponseDto } from '../dto/find-user-by-uuid-response.dto';
 
 @Controller('users')
 export class UserController {
   constructor(
     @Inject(UsersDiTokens.RegisterUserService)
     private readonly registerUserService: RegisterUserUseCase,
+    @Inject(UsersDiTokens.FindUserByUuidService)
+    private readonly findUserByUuidService: FindUserByUuidUseCase,
   ) {}
 
   @Post()
@@ -21,6 +26,21 @@ export class UserController {
     };
 
     const user: User = await this.registerUserService.execute(payload);
+
+    return {
+      uuid: user.uuid,
+      username: user.username,
+      email: user.email,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      deletedAt: user.deletedAt,
+    };
+  }
+
+  @Get(':uuid')
+  async findByUuid(@Param('uuid') uuid: string): Promise<FindUserByUuidResponseDto> {
+    const payload: FindUserByUuidPort = { uuid };
+    const user: User = await this.findUserByUuidService.execute(payload);
 
     return {
       uuid: user.uuid,
