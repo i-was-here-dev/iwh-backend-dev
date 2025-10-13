@@ -18,11 +18,9 @@ export class ValidateUserService implements ValidateUserUseCase {
 
     if (!user) throw new NotFoundException();
 
-    if (await bcrypt.compare(password, user.password)) {
-      return user;
-    }
+    if (!(await bcrypt.compare(password, user.password))) throw new UnauthorizedException();
 
-    throw new UnauthorizedException();
+    return user;
   }
 
   private async getUserByIdentifier(identifier: string): Promise<User | null> {

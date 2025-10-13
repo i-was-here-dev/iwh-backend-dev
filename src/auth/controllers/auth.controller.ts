@@ -1,4 +1,4 @@
-import { Body, Controller, Inject, Post } from '@nestjs/common';
+import { Body, Controller, Inject, Post, Request, UseGuards } from '@nestjs/common';
 import { GenerateAuthTokensUseCase } from '../services/usecases/generate-auth-tokens.usecase';
 import { AuthDiTokens } from '../di/auth-tokens.di';
 import { RegisterRequestDto } from '../dto/register-request.dto';
@@ -7,6 +7,9 @@ import { SaveUserUseCase } from 'src/users/services/usecases/save-user.usecase';
 import { UsersDiTokens } from 'src/users/di/users-tokens.di';
 import { User } from 'src/users/entities/user.entity';
 import { JwtTokens } from '../types/jwt-tokens.type';
+import { LoginResponseDto } from '../dto/login-response.dto';
+import { LocalAuthGuard } from '../guards/local-auth.guard';
+import { LocalAuthGuardResponse } from '../interfaces/local-auth-guard-response.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -31,8 +34,23 @@ export class AuthController {
         updatedAt: user.updatedAt,
         deletedAt: user.deletedAt,
       },
-      accessToken: tokens.access_token,
-      refreshToken: tokens.refresh_token,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+    };
+  }
+
+  @UseGuards(LocalAuthGuard)
+  @Post('/login')
+  async login(@Request() req: LocalAuthGuardResponse): Promise<LoginResponseDto> {
+    const tokens: JwtTokens = await this.generateAuthTokensService.execute({
+      username: req.user.username,
+      email: req.user.email,
+      userId: req.user.id,
+    });
+
+    return {
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
     };
   }
 }

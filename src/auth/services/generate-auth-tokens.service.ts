@@ -7,11 +7,11 @@ export class GenerateAuthTokensService implements GenerateAuthTokensUseCase {
 
   async execute(payload: GenerateAuthTokensPort): Promise<JwtTokens> {
     return {
-      access_token: this.jwtService.sign(
+      accessToken: this.jwtService.sign(
         { username: payload.username, email: payload.email, sub: payload.userId },
         { secret: process.env.JWT_SECRET },
       ),
-      refresh_token: this.jwtService.sign({ sub: payload.userId }, { expiresIn: '7d', secret: process.env.JWT_REFRESH_SECRET }),
+      refreshToken: this.jwtService.sign({ sub: payload.userId }, { expiresIn: '7d', secret: process.env.JWT_REFRESH_SECRET }),
     };
   }
 }
