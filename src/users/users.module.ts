@@ -48,6 +48,7 @@ const serviceProvider: Array<Provider> = [
 ];
 
 @Module({
+  exports: [UsersDiTokens.SaveUserService],
   providers: [...serviceProvider, ...repositoryProvider],
   controllers: [UserController],
 })
