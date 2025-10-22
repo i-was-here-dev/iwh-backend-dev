@@ -1,7 +1,7 @@
 import { User } from '../entities/user.entity';
 import { UserRepositoryInterface } from '../repositories/user-repository.interface';
 import { SoftDeleteUserPort, SoftDeleteUserUsecase } from './usecases/soft-delete-user.usecase';
-import { NotFoundException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 
 export class SoftDeleteUserService implements SoftDeleteUserUsecase {
   constructor(private readonly userRepository: UserRepositoryInterface) {}
@@ -10,7 +10,7 @@ export class SoftDeleteUserService implements SoftDeleteUserUsecase {
     const { id, uuid } = payload;
 
     const user: User | null = await this.userRepository.findByUuid(uuid);
-    if (user.id !== id) throw new NotFoundException();
+    if (user.id !== id) throw new UnauthorizedException();
 
     return await this.userRepository.softDelete(user);
   }
