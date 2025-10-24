@@ -1,4 +1,4 @@
-import { BlacklistedToken } from 'src/auth/entities/token.entity';
+import { BlacklistedToken } from 'src/auth/entities/blacklisted-token.entity';
 
 export interface BlacklistedTokenRepositoryInterface {
   save(token: BlacklistedToken): Promise<BlacklistedToken>;
