@@ -1,5 +1,5 @@
 import { BlacklistedTokenRepositoryInterface } from 'src/auth/repositories/blacklisted-token-repository.interface';
-import { BlacklistedToken } from '../../entities/token.entity';
+import { BlacklistedToken } from '../../entities/blacklisted-token.entity';
 import { Repository } from 'typeorm';
 
 export class BlacklistedTokenRepository implements BlacklistedTokenRepositoryInterface {
