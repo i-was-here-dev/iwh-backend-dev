@@ -11,6 +11,7 @@ import { ValidateUserService } from './services/validate-user.service';
 import { UsersDiTokens } from 'src/users/di/users-tokens.di';
 import { PassportModule } from '@nestjs/passport';
 import { ValidateUserUseCase } from './services/usecases/validate-user.usecase';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 const repositoryProvider: Array<Provider> = [];
 
@@ -33,6 +34,10 @@ const strategyProvider: Array<Provider> = [
     provide: AuthDiTokens.LocalStrategy,
     useFactory: (validateUserService: ValidateUserUseCase) => new LocalStrategy(validateUserService),
     inject: [AuthDiTokens.ValidateUserService],
+  },
+  {
+    provide: AuthDiTokens.JwtStrategy,
+    useFactory: () => new JwtStrategy(),
   },
 ];
 
