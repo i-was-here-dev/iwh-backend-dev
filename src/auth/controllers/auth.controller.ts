@@ -10,6 +10,7 @@ import { JwtTokens } from '../types/jwt-tokens.type';
 import { LoginResponseDto } from '../dto/login-response.dto';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { LocalAuthGuardResponse } from '../interfaces/local-auth-guard-response.interface';
+import { Public } from '../metadata/public.metadata';
 
 @Controller('auth')
 export class AuthController {
@@ -20,6 +21,7 @@ export class AuthController {
     private readonly saveUserService: SaveUserUseCase,
   ) {}
 
+  @Public()
   @Post('/register')
   async register(@Body() payload: RegisterRequestDto): Promise<RegisterResponseDto> {
     const user: User = await this.saveUserService.execute({ username: payload.username, email: payload.email, password: payload.password });
@@ -39,6 +41,7 @@ export class AuthController {
     };
   }
 
+  @Public()
   @UseGuards(LocalAuthGuard)
   @Post('/login')
   async login(@Request() req: LocalAuthGuardResponse): Promise<LoginResponseDto> {
