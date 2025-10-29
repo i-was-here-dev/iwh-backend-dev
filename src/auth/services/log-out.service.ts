@@ -1,4 +1,4 @@
-import { ConflictException } from '@nestjs/common';
+import { BadRequestException, ConflictException } from '@nestjs/common';
 import { BlacklistedToken } from '../entities/blacklisted-token.entity';
 import { BlacklistedTokenRepositoryInterface } from '../repositories/blacklisted-token-repository.interface';
 import { LogOutPort, LogOutUseCase } from './usecases/log-out.usecase';
@@ -8,6 +8,8 @@ export class LogOutService implements LogOutUseCase {
 
   async execute(payload: LogOutPort): Promise<void> {
     const { refreshToken, validationToken } = payload;
+
+    if (!refreshToken || !validationToken) throw new BadRequestException();
 
     if ((await this.blacklistedTokenRepository.findByToken(validationToken)) || (await this.blacklistedTokenRepository.findByToken(refreshToken))) {
       throw new ConflictException('Expired token');

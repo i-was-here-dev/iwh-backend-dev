@@ -1,4 +1,4 @@
-import { Body, Controller, Inject, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpCode, Inject, Post, Request, UseGuards } from '@nestjs/common';
 import { GenerateAuthTokensUseCase } from '../services/usecases/generate-auth-tokens.usecase';
 import { AuthDiTokens } from '../di/auth-tokens.di';
 import { RegisterRequestDto } from '../dto/register-request.dto';
@@ -11,6 +11,8 @@ import { LoginResponseDto } from '../dto/login-response.dto';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { LocalAuthGuardResponse } from '../interfaces/local-auth-guard-response.interface';
 import { Public } from '../metadata/public.metadata';
+import { ExtractJwt } from 'passport-jwt';
+import { LogOutUseCase } from '../services/usecases/log-out.usecase';
 
 @Controller('auth')
 export class AuthController {
@@ -19,6 +21,8 @@ export class AuthController {
     private readonly generateAuthTokensService: GenerateAuthTokensUseCase,
     @Inject(UsersDiTokens.SaveUserService)
     private readonly saveUserService: SaveUserUseCase,
+    @Inject(AuthDiTokens.LogOutService)
+    private readonly logOutService: LogOutUseCase,
   ) {}
 
   @Public()
@@ -55,5 +59,17 @@ export class AuthController {
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
     };
+  }
+
+  @Post('/log-out')
+  @HttpCode(204)
+  async logout(@Request() req: Request): Promise<void> {
+    const jwtExtractor = ExtractJwt.fromAuthHeaderAsBearerToken();
+    const refreshTokenExtractor = ExtractJwt.fromExtractors([ExtractJwt.fromHeader('refresh-token')]);
+
+    const validationToken = jwtExtractor(req);
+    const refreshToken = refreshTokenExtractor(req);
+
+    await this.logOutService.execute({ refreshToken: refreshToken, validationToken: validationToken });
   }
 }
