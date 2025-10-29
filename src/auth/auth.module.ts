@@ -12,8 +12,25 @@ import { UsersDiTokens } from 'src/users/di/users-tokens.di';
 import { PassportModule } from '@nestjs/passport';
 import { ValidateUserUseCase } from './services/usecases/validate-user.usecase';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { DataSource, Repository } from 'typeorm';
+import { BlacklistedToken } from './entities/blacklisted-token.entity';
+import { DatabaseDiTokens } from 'src/infrastructure/database/di/database-tokens.di';
+import { BlacklistedTokenRepository } from './repositories/postgres/blacklisted-token.repository';
+import { BlacklistedTokenRepositoryInterface } from './repositories/blacklisted-token-repository.interface';
+import { LogOutService } from './services/log-out.service';
 
-const repositoryProvider: Array<Provider> = [];
+const repositoryProvider: Array<Provider> = [
+  {
+    provide: AuthDiTokens.PostgresBlacklistedTokenRepositoryInterface,
+    useFactory: (dataSource: DataSource) => dataSource.getRepository(BlacklistedToken),
+    inject: [DatabaseDiTokens.PostgresDataSource],
+  },
+  {
+    provide: AuthDiTokens.BlacklistedTokenRepositoryInterface,
+    useFactory: (repository: Repository<BlacklistedToken>) => new BlacklistedTokenRepository(repository),
+    inject: [AuthDiTokens.PostgresBlacklistedTokenRepositoryInterface],
+  },
+];
 
 const serviceProvider: Array<Provider> = [
   {
@@ -26,6 +43,11 @@ const serviceProvider: Array<Provider> = [
     useFactory: (findUserByUsernameService: FindUserByUsernameUseCase, findUserByEmailService: FindUserByEmailUseCase) =>
       new ValidateUserService(findUserByUsernameService, findUserByEmailService),
     inject: [UsersDiTokens.FindUserByUsernameService, UsersDiTokens.FindUserByEmailService],
+  },
+  {
+    provide: AuthDiTokens.LogOutService,
+    useFactory: (blackListedTokenRepository: BlacklistedTokenRepositoryInterface) => new LogOutService(blackListedTokenRepository),
+    inject: [AuthDiTokens.BlacklistedTokenRepositoryInterface],
   },
 ];
 
