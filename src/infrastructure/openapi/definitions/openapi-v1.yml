@@ -1,0 +1,267 @@
+openapi: 3.0.3
+info:
+  title: Service Template API
+  version: 1.0.0
+  description: A template service API built with NestJS
+  contact:
+    name: API Support
+    email: support@example.com
+servers:
+  - url: http://localhost:3000
+    description: Development server
+paths:
+  /auth/register:
+    post:
+      operationId: registerUser
+      summary: Register a new user
+      description: Create a new user account with username, email, and password
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: User successfully registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Bad request - missing required parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+        '422':
+          description: Unprocessable entity - validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '409':
+          description: Conflict - user already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictError'
+  /auth/login:
+    post:
+      operationId: loginUser
+      summary: Login user
+      description: Authenticate user with username/email and password
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: User successfully authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Bad request - missing required parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+        '422':
+          description: Unprocessable entity - validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '401':
+          description: Unauthorized - invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+  /openapi/v1.yml:
+    get:
+      operationId: getOpenApiSpec
+      summary: Get OpenAPI specification
+      description: Returns the OpenAPI specification in YAML format
+      tags:
+        - Documentation
+      responses:
+        '200':
+          description: OpenAPI specification in YAML format
+          content:
+            text/yaml:
+              schema:
+                type: string
+                example: |
+                  openapi: 3.0.3
+                  info:
+                    title: Service Template API
+                    version: 1.0.0
+  /openapi/docs:
+    get:
+      operationId: getApiDocumentation
+      summary: Get API documentation
+      description: Returns an interactive Swagger UI documentation page
+      tags:
+        - Documentation
+      responses:
+        '200':
+          description: Interactive API documentation page
+          content:
+            text/html:
+              schema:
+                type: string
+                example: |
+                  <!DOCTYPE html>
+                  <html>
+                    <head>
+                      <title>Service Template API Documentation</title>
+                    </head>
+                    <body>
+                      <div id="swagger-ui"></div>
+                    </body>
+                  </html>
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      required:
+        - username
+        - email
+        - password
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 50
+          pattern: '^[a-zA-Z0-9_-]+$'
+          description: Unique username for the user
+          example: johndoe
+        email:
+          type: string
+          format: email
+          maxLength: 100
+          description: Valid email address
+          example: john.doe@example.com
+        password:
+          type: string
+          minLength: 8
+          maxLength: 100
+          description: User password
+          example: securePassword123
+    LoginRequest:
+      type: object
+      required:
+        - identifier
+        - password
+      properties:
+        identifier:
+          type: string
+          description: Username or email address
+          example: johndoe
+        password:
+          type: string
+          description: User password
+          example: securePassword123
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        accessToken:
+          type: string
+          description: JWT access token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        tokenType:
+          type: string
+          enum: [Bearer]
+          example: Bearer
+        expiresIn:
+          type: integer
+          description: Token expiration time in seconds
+          example: 3600
+    User:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          description: User UUID
+          example: 123e4567-e89b-12d3-a456-426614174000
+        username:
+          type: string
+          description: Username
+          example: johndoe
+        email:
+          type: string
+          format: email
+          description: Email address
+          example: john.doe@example.com
+        createdAt:
+          type: string
+          format: date-time
+          description: User creation timestamp
+          example: 2023-01-01T00:00:00Z
+        updatedAt:
+          type: string
+          format: date-time
+          description: User last update timestamp
+          example: 2023-01-01T00:00:00Z
+    BadRequestError:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: Missing required parameters
+        error:
+          type: string
+          example: Bad Request
+    ValidationError:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 422
+        message:
+          type: array
+          items:
+            type: string
+          example: ["username must be at least 3 characters", "email must be a valid email"]
+        error:
+          type: string
+          example: Unprocessable Entity
+    ConflictError:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 409
+        message:
+          type: string
+          example: User with this username or email already exists
+        error:
+          type: string
+          example: Conflict
+    UnauthorizedError:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 401
+        message:
+          type: string
+          example: Invalid credentials
+        error:
+          type: string
+          example: Unauthorized
