@@ -12,8 +12,7 @@ export class SoftDeleteUserService implements SoftDeleteUserUsecase {
     const user: User | null = await this.userRepository.findByUuid(uuid);
     if (user.id !== id) throw new UnauthorizedException();
 
-    const User: User | null = await this.userRepository.findByUuid(uuid);
-    if (!User) throw new NotFoundException();
+    if (!user) throw new NotFoundException();
 
     return await this.userRepository.softDelete(user);
   }
