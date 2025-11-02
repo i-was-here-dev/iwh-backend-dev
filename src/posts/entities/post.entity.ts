@@ -14,6 +14,12 @@ export class Post {
   @Column({ name: 'image_url' })
   imageUrl: string;
 
+  @Column({ name: 'x', type: 'float' })
+  x: number;
+
+  @Column({ name: 'y', type: 'float' })
+  y: number;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
