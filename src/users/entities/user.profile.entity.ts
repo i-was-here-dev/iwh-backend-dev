@@ -5,11 +5,13 @@ import {
   Entity,
   Generated,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
+import { Post } from 'src/posts/entities/post.entity';
 
 @Entity()
 export class Profile {
@@ -23,6 +25,9 @@ export class Profile {
   @OneToOne(() => User, (user) => user.profile)
   @JoinColumn()
   user: User;
+
+  @OneToMany(() => Post, (post) => post.profile)
+  post: Post[];
 
   @Column({ unique: true })
   nickname: string;
