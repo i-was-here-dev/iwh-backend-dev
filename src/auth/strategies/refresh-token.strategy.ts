@@ -3,7 +3,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { RefreshTokenStrategyPayload } from '../types/refresh-token-strategy-payload.type';
 import { RefreshTokenStrategyResponse } from '../types/refresh-token-strategy-response.type';
 
-export class RefreshTokenStrategy extends PassportStrategy(Strategy) {
+export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'refresh-jwt') {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([ExtractJwt.fromHeader('refresh-token')]),

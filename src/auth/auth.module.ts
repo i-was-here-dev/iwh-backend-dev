@@ -18,6 +18,7 @@ import { DatabaseDiTokens } from 'src/infrastructure/database/di/database-tokens
 import { BlacklistedTokenRepository } from './repositories/postgres/blacklisted-token.repository';
 import { BlacklistedTokenRepositoryInterface } from './repositories/blacklisted-token-repository.interface';
 import { LogOutService } from './services/log-out.service';
+import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
 
 const repositoryProvider: Array<Provider> = [
   {
@@ -60,6 +61,10 @@ const strategyProvider: Array<Provider> = [
   {
     provide: AuthDiTokens.JwtStrategy,
     useFactory: () => new JwtStrategy(),
+  },
+  {
+    provide: AuthDiTokens.RefreshTokenStrategy,
+    useFactory: () => new RefreshTokenStrategy(),
   },
 ];
 
