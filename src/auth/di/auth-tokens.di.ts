@@ -8,4 +8,5 @@ export class AuthDiTokens {
 
   public static readonly LocalStrategy: string = 'LocalStrategy';
   public static readonly JwtStrategy: string = 'JwtStrategy';
+  public static readonly RefreshTokenStrategy: string = 'RefreshTokenStrategy';
 }
