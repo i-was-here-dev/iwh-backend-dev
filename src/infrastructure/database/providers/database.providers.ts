@@ -2,6 +2,7 @@ import { Provider } from '@nestjs/common';
 import { DatabaseDiTokens } from '../di/database-tokens.di';
 import { DataSource } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { BlacklistedToken } from 'src/auth/entities/blacklisted-token.entity';
 
 export const databaseProviders: Array<Provider> = [
   {
@@ -14,7 +15,7 @@ export const databaseProviders: Array<Provider> = [
         username: process.env.POSTGRES_USER,
         password: process.env.POSTGRES_PASSWORD,
         database: process.env.POSTGRES_DB_NAME,
-        entities: [User],
+        entities: [User, BlacklistedToken],
         synchronize: true,
         logging: process.env.NODE_ENV === 'development',
       });

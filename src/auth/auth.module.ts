@@ -1,18 +1,82 @@
 import { Module, Provider } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
+import { AuthDiTokens } from './di/auth-tokens.di';
+import { GenerateAuthTokensService } from './services/generate-auth-tokens.service';
+import { AuthController } from './controllers/auth.controller';
+import { UsersModule } from 'src/users/users.module';
+import { LocalStrategy } from './strategies/local.strategy';
+import { FindUserByEmailUseCase } from 'src/users/services/usecases/find-user-by-email.usecase';
+import { FindUserByUsernameUseCase } from 'src/users/services/usecases/find-user-by-username.usecase';
+import { ValidateUserService } from './services/validate-user.service';
+import { UsersDiTokens } from 'src/users/di/users-tokens.di';
+import { PassportModule } from '@nestjs/passport';
+import { ValidateUserUseCase } from './services/usecases/validate-user.usecase';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { DataSource, Repository } from 'typeorm';
+import { BlacklistedToken } from './entities/blacklisted-token.entity';
+import { DatabaseDiTokens } from 'src/infrastructure/database/di/database-tokens.di';
+import { BlacklistedTokenRepository } from './repositories/postgres/blacklisted-token.repository';
+import { BlacklistedTokenRepositoryInterface } from './repositories/blacklisted-token-repository.interface';
+import { LogOutService } from './services/log-out.service';
+import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
 
-const repositoryProvider: Array<Provider> = [];
+const repositoryProvider: Array<Provider> = [
+  {
+    provide: AuthDiTokens.PostgresBlacklistedTokenRepositoryInterface,
+    useFactory: (dataSource: DataSource) => dataSource.getRepository(BlacklistedToken),
+    inject: [DatabaseDiTokens.PostgresDataSource],
+  },
+  {
+    provide: AuthDiTokens.BlacklistedTokenRepositoryInterface,
+    useFactory: (repository: Repository<BlacklistedToken>) => new BlacklistedTokenRepository(repository),
+    inject: [AuthDiTokens.PostgresBlacklistedTokenRepositoryInterface],
+  },
+];
 
-const serviceProvider: Array<Provider> = [];
+const serviceProvider: Array<Provider> = [
+  {
+    provide: AuthDiTokens.GenerateAuthTokensService,
+    useFactory: (jwtService: JwtService) => new GenerateAuthTokensService(jwtService),
+    inject: [JwtService],
+  },
+  {
+    provide: AuthDiTokens.ValidateUserService,
+    useFactory: (findUserByUsernameService: FindUserByUsernameUseCase, findUserByEmailService: FindUserByEmailUseCase) =>
+      new ValidateUserService(findUserByUsernameService, findUserByEmailService),
+    inject: [UsersDiTokens.FindUserByUsernameService, UsersDiTokens.FindUserByEmailService],
+  },
+  {
+    provide: AuthDiTokens.LogOutService,
+    useFactory: (blackListedTokenRepository: BlacklistedTokenRepositoryInterface) => new LogOutService(blackListedTokenRepository),
+    inject: [AuthDiTokens.BlacklistedTokenRepositoryInterface],
+  },
+];
+
+const strategyProvider: Array<Provider> = [
+  {
+    provide: AuthDiTokens.LocalStrategy,
+    useFactory: (validateUserService: ValidateUserUseCase) => new LocalStrategy(validateUserService),
+    inject: [AuthDiTokens.ValidateUserService],
+  },
+  {
+    provide: AuthDiTokens.JwtStrategy,
+    useFactory: () => new JwtStrategy(),
+  },
+  {
+    provide: AuthDiTokens.RefreshTokenStrategy,
+    useFactory: () => new RefreshTokenStrategy(),
+  },
+];
 
 @Module({
   imports: [
+    PassportModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: 3000 },
     }),
+    UsersModule,
   ],
-  controllers: [],
-  providers: [...serviceProvider, ...repositoryProvider],
+  controllers: [AuthController],
+  providers: [...serviceProvider, ...repositoryProvider, ...strategyProvider],
 })
 export class AuthModule {}

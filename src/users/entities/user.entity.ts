@@ -1,31 +1,26 @@
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  Generated,
-  PrimaryColumn,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, Generated, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Profile } from './user.profile.entity';
 
 @Entity('users')
 export class User {
-  @Column({ name: 'username' })
-  username: string;
-
-  @Column({ name: 'password' })
-  password: string;
-
-  @Column({ name: 'email' })
-  email: string;
-
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column()
   @Generated('uuid')
   uuid: string;
+
+  @OneToOne(() => Profile, (profile) => profile.user)
+  profile: Profile;
+
+  @Column({ name: 'username', unique: true })
+  username: string;
+
+  @Column({ name: 'email', unique: true })
+  email: string;
+
+  @Column({ name: 'password' })
+  password: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

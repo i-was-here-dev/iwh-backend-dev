@@ -1,13 +1,13 @@
 import { ConflictException } from '@nestjs/common';
 import { User } from '../entities/user.entity';
 import { UserRepositoryInterface } from '../repositories/user-repository.interface';
-import { RegisterUserPort, RegisterUserUseCase } from './usecases/register-user.usecase';
+import { SaveUserPort, SaveUserUseCase } from './usecases/save-user.usecase';
 import * as bcrypt from 'bcrypt';
 
-export class RegisterUserService implements RegisterUserUseCase {
+export class SaveUserService implements SaveUserUseCase {
   constructor(private readonly userRepository: UserRepositoryInterface) {}
 
-  async execute(payload: RegisterUserPort): Promise<User> {
+  async execute(payload: SaveUserPort): Promise<User> {
     const { email, username, password } = payload;
 
     if (await this.userRepository.findByEmail(email)) {

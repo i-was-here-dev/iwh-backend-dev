@@ -1,4 +1,4 @@
-export class RegisterUserResponseDto {
+export class FindUserByUuidResponseDto {
   username: string;
   email: string;
   uuid: string;

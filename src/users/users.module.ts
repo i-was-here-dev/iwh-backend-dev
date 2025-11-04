@@ -7,7 +7,8 @@ import { User } from './entities/user.entity';
 import { DatabaseDiTokens } from 'src/infrastructure/database/di/database-tokens.di';
 import { UserRepository } from './repositories/postgres/user.repository';
 import { FindUserByUsernameService } from './services/find-user-by-username.service';
-import { RegisterUserService } from './services/register-user.service';
+import { FindUserByUuidService } from './services/find-user-by-uuid.service';
+import { SaveUserService } from './services/save-user.service';
 import { UserController } from './controllers/user.controller';
 
 const repositoryProvider: Array<Provider> = [
@@ -35,13 +36,19 @@ const serviceProvider: Array<Provider> = [
     inject: [UsersDiTokens.UserRepositoryInterface],
   },
   {
-    provide: UsersDiTokens.RegisterUserService,
-    useFactory: (userRepository: UserRepositoryInterface) => new RegisterUserService(userRepository),
+    provide: UsersDiTokens.SaveUserService,
+    useFactory: (userRepository: UserRepositoryInterface) => new SaveUserService(userRepository),
+    inject: [UsersDiTokens.UserRepositoryInterface],
+  },
+  {
+    provide: UsersDiTokens.FindUserByUuidService,
+    useFactory: (userRepository: UserRepositoryInterface) => new FindUserByUuidService(userRepository),
     inject: [UsersDiTokens.UserRepositoryInterface],
   },
 ];
 
 @Module({
+  exports: [UsersDiTokens.SaveUserService, UsersDiTokens.FindUserByEmailService, UsersDiTokens.FindUserByUsernameService],
   providers: [...serviceProvider, ...repositoryProvider],
   controllers: [UserController],
 })
