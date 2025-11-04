@@ -5,7 +5,7 @@ import {
   Entity,
   Generated,
   JoinColumn,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -20,7 +20,8 @@ export class Post {
   @Generated('uuid')
   uuid: string;
 
-  @OneToOne(() => Profile, (profile) => profile.post)
+  @ManyToOne(() => Profile, (profile) => profile.post)
+  @JoinColumn()
   profile: Profile;
 
   @Column({ name: 'title' })

@@ -5,6 +5,7 @@ import {
   Entity,
   Generated,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -25,9 +26,8 @@ export class Profile {
   @JoinColumn()
   user: User;
 
-  @OneToOne(() => Post, (post) => post.profile)
-  @JoinColumn()
-  post: Post;
+  @OneToMany(() => Post, (post) => post.profile)
+  post: Post[];
 
   @Column({ unique: true })
   nickname: string;
