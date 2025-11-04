@@ -15,6 +15,8 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'refresh-jw
   async validate(payload: RefreshTokenStrategyPayload): Promise<RefreshTokenStrategyResponse> {
     return {
       userId: payload.sub,
+      email: payload.email,
+      username: payload.username,
     };
   }
 }
