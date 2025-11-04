@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, Generated, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, Generated, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Profile } from './user.profile.entity';
 
 @Entity('users')
 export class User {
@@ -8,6 +9,9 @@ export class User {
   @Column()
   @Generated('uuid')
   uuid: string;
+
+  @OneToOne(() => Profile, (profile) => profile.user)
+  profile: Profile;
 
   @Column({ name: 'username', unique: true })
   username: string;
