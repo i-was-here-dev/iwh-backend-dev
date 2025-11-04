@@ -10,6 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
+import { Post } from 'src/posts/entities/post.entity';
 
 @Entity()
 export class Profile {
@@ -23,6 +24,10 @@ export class Profile {
   @OneToOne(() => User, (user) => user.profile)
   @JoinColumn()
   user: User;
+
+  @OneToOne(() => Post, (post) => post.profile)
+  @JoinColumn()
+  post: Post;
 
   @Column({ unique: true })
   nickname: string;

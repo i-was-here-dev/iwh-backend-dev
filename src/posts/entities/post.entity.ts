@@ -1,9 +1,27 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  Generated,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Profile } from 'src/users/entities/user.profile.entity';
 
 @Entity('posts')
 export class Post {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
+  @Generated('uuid')
+  uuid: string;
+
+  @OneToOne(() => Profile, (profile) => profile.post)
+  profile: Profile;
 
   @Column({ name: 'title' })
   title: string;
