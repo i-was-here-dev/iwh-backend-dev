@@ -12,7 +12,8 @@ import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { LocalAuthGuardResponse } from '../interfaces/local-auth-guard-response.interface';
 import { Public } from '../metadata/public.metadata';
 import { ExtractJwt } from 'passport-jwt';
-import { LogOutUseCase } from '../services/usecases/log-out.usecase';
+import { BlacklistJwtTokenUseCase } from '../services/usecases/blacklist-jwt-token.usecase';
+import { BlacklistRefreshTokenUseCase } from '../services/usecases/blacklist-refresh-token.usecase';
 
 @Controller('auth')
 export class AuthController {
@@ -21,8 +22,10 @@ export class AuthController {
     private readonly generateAuthTokensService: GenerateAuthTokensUseCase,
     @Inject(UsersDiTokens.SaveUserService)
     private readonly saveUserService: SaveUserUseCase,
-    @Inject(AuthDiTokens.LogOutService)
-    private readonly logOutService: LogOutUseCase,
+    @Inject(AuthDiTokens.BlacklistJwtTokenService)
+    private readonly blacklistJwtTokenService: BlacklistJwtTokenUseCase,
+    @Inject(AuthDiTokens.BlacklistRefreshTokenService)
+    private readonly blacklistRefreshTokenService: BlacklistRefreshTokenUseCase,
   ) {}
 
   @Public()
@@ -67,9 +70,10 @@ export class AuthController {
     const jwtExtractor = ExtractJwt.fromAuthHeaderAsBearerToken();
     const refreshTokenExtractor = ExtractJwt.fromExtractors([ExtractJwt.fromHeader('refresh-token')]);
 
-    const validationToken = jwtExtractor(req);
+    const jwtToken = jwtExtractor(req);
     const refreshToken = refreshTokenExtractor(req);
 
-    await this.logOutService.execute({ refreshToken: refreshToken, validationToken: validationToken });
+    await this.blacklistJwtTokenService.execute({ jwtToken: jwtToken });
+    await this.blacklistRefreshTokenService.execute({ refreshToken: refreshToken });
   }
 }
