@@ -17,8 +17,12 @@ export class Profile {
   id: number;
 
   @Column()
-  @Generated()
+  @Generated('uuid')
   uuid: string;
+
+  @OneToOne(() => User, (user) => user.profile)
+  @JoinColumn()
+  user: User;
 
   @Column({ unique: true })
   nickname: string;
@@ -37,8 +41,4 @@ export class Profile {
 
   @UpdateDateColumn({ name: 'update_at' })
   updatedAt: Date;
-
-  @OneToOne(() => User, (user) => user.profile)
-  @JoinColumn()
-  user: User;
 }

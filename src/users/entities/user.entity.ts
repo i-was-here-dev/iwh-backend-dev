@@ -10,6 +10,9 @@ export class User {
   @Generated('uuid')
   uuid: string;
 
+  @OneToOne(() => Profile, (profile) => profile.user)
+  profile: Profile;
+
   @Column({ name: 'username', unique: true })
   username: string;
 
@@ -27,7 +30,4 @@ export class User {
 
   @UpdateDateColumn({ name: 'update_at' })
   updatedAt: Date;
-
-  @OneToOne(() => Profile, (profile) => profile.user)
-  profile: Profile;
 }
