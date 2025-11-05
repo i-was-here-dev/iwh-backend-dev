@@ -60,7 +60,8 @@ const strategyProvider: Array<Provider> = [
   },
   {
     provide: AuthDiTokens.JwtStrategy,
-    useFactory: () => new JwtStrategy(),
+    useFactory: (blacklistedTokenRepository: BlacklistedTokenRepositoryInterface) => new JwtStrategy(blacklistedTokenRepository),
+    inject: [AuthDiTokens.BlacklistedTokenRepositoryInterface],
   },
   {
     provide: AuthDiTokens.RefreshTokenStrategy,
