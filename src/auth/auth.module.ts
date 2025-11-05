@@ -65,7 +65,8 @@ const strategyProvider: Array<Provider> = [
   },
   {
     provide: AuthDiTokens.RefreshTokenStrategy,
-    useFactory: () => new RefreshTokenStrategy(),
+    useFactory: (blacklistedTokenRepository: BlacklistedTokenRepositoryInterface) => new RefreshTokenStrategy(blacklistedTokenRepository),
+    inject: [AuthDiTokens.BlacklistedTokenRepositoryInterface],
   },
 ];
 
