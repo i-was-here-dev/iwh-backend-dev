@@ -7,14 +7,17 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      stopAtFirstError: true,
       exceptionFactory: (validationErrors: ValidationError[]) => {
-        const firstError: ValidationError = validationErrors[0];
-        if (Object.prototype.hasOwnProperty.call(firstError.constraints, 'isNotEmpty')) {
-          return new BadRequestException('Required parameters are missing');
+        console.log(validationErrors);
+        for (const validationError of validationErrors) {
+          if (Object.prototype.hasOwnProperty.call(validationError.constraints, 'isNotEmpty')) {
+            throw new BadRequestException('Required parameters are missing');
+          }
         }
 
-        return new UnprocessableEntityException(Object.values(firstError.constraints)[0]);
+        const firstError = validationErrors[0];
+        const message = firstError?.constraints ? Object.values(firstError.constraints)[0] : 'Validation failed';
+        return new UnprocessableEntityException(message);
       },
     }),
   );
