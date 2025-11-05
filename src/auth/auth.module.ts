@@ -18,8 +18,7 @@ import { DatabaseDiTokens } from 'src/infrastructure/database/di/database-tokens
 import { BlacklistedTokenRepository } from './repositories/postgres/blacklisted-token.repository';
 import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
 import { BlacklistedTokenRepositoryInterface } from './repositories/blacklisted-token-repository.interface';
-import { BlacklistJwtTokenService } from './services/blacklist-jwt-token.service';
-import { BlacklistRefreshTokenService } from './services/blacklist-refresh-token.service';
+import { BlacklistTokenService } from './services/blacklist-token.service';
 
 const repositoryProvider: Array<Provider> = [
   {
@@ -47,13 +46,8 @@ const serviceProvider: Array<Provider> = [
     inject: [UsersDiTokens.FindUserByUsernameService, UsersDiTokens.FindUserByEmailService],
   },
   {
-    provide: AuthDiTokens.BlacklistJwtTokenService,
-    useFactory: (blacklistedTokenRepository: BlacklistedTokenRepositoryInterface) => new BlacklistJwtTokenService(blacklistedTokenRepository),
-    inject: [AuthDiTokens.BlacklistedTokenRepositoryInterface],
-  },
-  {
-    provide: AuthDiTokens.BlacklistRefreshTokenService,
-    useFactory: (blacklistedTokenRepository: BlacklistedTokenRepositoryInterface) => new BlacklistRefreshTokenService(blacklistedTokenRepository),
+    provide: AuthDiTokens.BlacklistTokenService,
+    useFactory: (blacklistedTokenRepository: BlacklistedTokenRepositoryInterface) => new BlacklistTokenService(blacklistedTokenRepository),
     inject: [AuthDiTokens.BlacklistedTokenRepositoryInterface],
   },
 ];
