@@ -44,5 +44,13 @@ export default tseslint.config(
     rules: {
       '@typescript-eslint/require-await': 'off',
     }
+  },
+  {
+    files: [
+      '**/auth/decorators/user-data.decorator.ts'
+    ],
+    rules: {
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+    }
   }
 );

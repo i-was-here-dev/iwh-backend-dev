@@ -13,6 +13,10 @@ import { LocalAuthGuardResponse } from '../interfaces/local-auth-guard-response.
 import { Public } from '../metadata/public.metadata';
 import { ExtractJwt } from 'passport-jwt';
 import { BlacklistTokenUseCase } from '../services/usecases/blacklist-token.usecase';
+import { JwtRefreshAuthGuard } from '../guards/jwt-refresh-auth.guard';
+import { RefreshTokenResponseDto } from '../dto/refresh-token-response.dto';
+import { UserData } from '../decorators/user-data.decorator';
+import { JwtAuthGuardResponse } from '../interfaces/jwt-auth-guard-response.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -47,7 +51,7 @@ export class AuthController {
 
   @Public()
   @UseGuards(LocalAuthGuard)
-  @Post('/login')
+  @Post('/log-in')
   async login(@Request() req: LocalAuthGuardResponse): Promise<LoginResponseDto> {
     const tokens: JwtTokens = await this.generateAuthTokensService.execute({
       username: req.user.username,
@@ -72,5 +76,26 @@ export class AuthController {
 
     await this.blacklistTokenService.execute({ token: jwtToken });
     await this.blacklistTokenService.execute({ token: refreshToken });
+  }
+
+  @Public()
+  @Post('/refresh-token')
+  @UseGuards(JwtRefreshAuthGuard)
+  async refreshToken(@Request() req: Request, @UserData() user: JwtAuthGuardResponse): Promise<RefreshTokenResponseDto> {
+    const refreshTokenExtractor = ExtractJwt.fromExtractors([ExtractJwt.fromHeader('refresh-token')]);
+    const refreshToken = refreshTokenExtractor(req);
+
+    await this.blacklistTokenService.execute({ token: refreshToken });
+
+    const tokens: JwtTokens = await this.generateAuthTokensService.execute({
+      username: user.username,
+      email: user.email,
+      userId: user.id,
+    });
+
+    return {
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+    };
   }
 }
