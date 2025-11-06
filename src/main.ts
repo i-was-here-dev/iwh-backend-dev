@@ -8,7 +8,6 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       exceptionFactory: (validationErrors: ValidationError[]) => {
-        console.log(validationErrors);
         for (const validationError of validationErrors) {
           if (Object.prototype.hasOwnProperty.call(validationError.constraints, 'isNotEmpty')) {
             throw new BadRequestException('Required parameters are missing');

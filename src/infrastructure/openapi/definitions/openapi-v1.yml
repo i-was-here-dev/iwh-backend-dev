@@ -1,11 +1,8 @@
 openapi: 3.0.3
 info:
-  title: Service Template API
+  title: I Was Here Service API
   version: 1.0.0
-  description: A template service API built with NestJS
-  contact:
-    name: API Support
-    email: support@example.com
+  description: I Was Here Service API built with NestJS
 servers:
   - url: http://localhost:3000
     description: Development server
@@ -15,6 +12,7 @@ paths:
       operationId: registerUser
       summary: Register a new user
       description: Create a new user account with username, email, and password
+      security: []
       tags:
         - Authentication
       requestBody:
@@ -29,30 +27,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthResponse'
+                $ref: '#/components/schemas/RegisterResponse'
         '400':
-          description: Bad request - missing required parameters
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestError'
-        '422':
-          description: Unprocessable entity - validation failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
+          $ref: '#/components/responses/BadRequestError'
         '409':
-          description: Conflict - user already exists
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ConflictError'
-  /auth/login:
+          $ref: '#/components/responses/ConflictError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityError'
+  /auth/log-in:
     post:
       operationId: loginUser
-      summary: Login user
-      description: Authenticate user with username/email and password
+      summary: Acquire access tokens
+      description: Acquire access tokens by providing correct identifier (username or email) and password
+      security: []
       tags:
         - Authentication
       requestBody:
@@ -62,75 +49,138 @@ paths:
             schema:
               $ref: '#/components/schemas/LoginRequest'
       responses:
-        '200':
-          description: User successfully authenticated
+        '201':
+          description: User successfully logged in
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthResponse'
+                $ref: '#/components/schemas/LoginResponse'
         '400':
-          description: Bad request - missing required parameters
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestError'
-        '422':
-          description: Unprocessable entity - validation failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
+          $ref: '#/components/responses/BadRequestError'
         '401':
-          description: Unauthorized - invalid credentials
+          $ref: '#/components/responses/LocalUnauthorizedError'
+  /auth/log-out:
+    post:
+      operationId: logoutUser
+      summary: Blacklist access tokens
+      description: Blacklists user's refresh and JWT tokens
+      security: 
+        - bearerAuth: []
+      tags:
+        - Authentication
+      responses:
+        '204':
+          description: User logged out successfully
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/JwtUnauthorizedError'
+        '409':
+          $ref: '#/components/responses/ConflictError'
+  /auth/refresh-token:
+    post:
+      operationId: refreshToken
+      summary: Renew JWT token
+      description: Blacklist the old refresh token and provide new refresh JWT tokens
+      security: 
+        - refreshToken: []
+      tags:
+        - Authentication
+      responses:
+        '201':
+          description: Tokens successfully refreshed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UnauthorizedError'
-  /openapi/v1.yml:
-    get:
-      operationId: getOpenApiSpec
-      summary: Get OpenAPI specification
-      description: Returns the OpenAPI specification in YAML format
-      tags:
-        - Documentation
-      responses:
-        '200':
-          description: OpenAPI specification in YAML format
-          content:
-            text/yaml:
-              schema:
-                type: string
-                example: |
-                  openapi: 3.0.3
-                  info:
-                    title: Service Template API
-                    version: 1.0.0
-  /openapi/docs:
-    get:
-      operationId: getApiDocumentation
-      summary: Get API documentation
-      description: Returns an interactive Swagger UI documentation page
-      tags:
-        - Documentation
-      responses:
-        '200':
-          description: Interactive API documentation page
-          content:
-            text/html:
-              schema:
-                type: string
-                example: |
-                  <!DOCTYPE html>
-                  <html>
-                    <head>
-                      <title>Service Template API Documentation</title>
-                    </head>
-                    <body>
-                      <div id="swagger-ui"></div>
-                    </body>
-                  </html>
+                $ref: '#/components/schemas/RefreshResponse'
+        '401':
+          $ref: '#/components/responses/RefreshUnauthorizedError'
+
 components:
+  securitySchemes: 
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    refreshToken:
+      type: apiKey
+      in: header
+      name: refresh-token
+      description: Refresh token for renewing JWT
+  responses:
+    BadRequestError:
+      description: Missing required parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Required parameters are missing
+            error: Bad Request
+            statusCode: 400
+    JwtUnauthorizedError:
+      description: Failure to provide a valid JWT token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: 'Authentication Failed'
+            error: 'Unauthorized'
+            statusCode: 401
+    RefreshUnauthorizedError:
+      description: Failure to provide a valid Refresh token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: 'Authentication Failed'
+            error: 'Unauthorized'
+            statusCode: 401
+    LocalUnauthorizedError:
+      description: Provided credentials were invalid
+      content: 
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: 'Invalid Credentials'
+            error: 'Unauthorized'
+            statusCode: 401
+    UnprocessableEntityError:
+      description: Provided parameters are invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Failed to validate parameters
+            error: Unprocessable Entity
+            statusCode: 422
+    ConflictError:
+      description: Provided parameters conflict with the current state of the server
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: Parameters conflict with the current state of the server
+            error: Conflict
+            statusCode: 409 
   schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Message describing the error
+        error:
+          type: string
+          description: Error type
+        statusCode:
+          type: integer
+          description: HTTP status status code
     RegisterRequest:
       type: object
       required:
@@ -141,22 +191,32 @@ components:
         username:
           type: string
           minLength: 3
-          maxLength: 50
-          pattern: '^[a-zA-Z0-9_-]+$'
           description: Unique username for the user
           example: johndoe
         email:
           type: string
           format: email
-          maxLength: 100
-          description: Valid email address
+          description: Unique email address
           example: john.doe@example.com
         password:
           type: string
+          pattern: '/^(?=.*[A-Z])(?=.*\d).{8,}$/'
           minLength: 8
-          maxLength: 100
           description: User password
           example: securePassword123
+    RegisterResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        accessToken:
+          type: string
+          description: JWT access token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        refreshToken:
+          type: string
+          description: Refresh token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     LoginRequest:
       type: object
       required:
@@ -171,23 +231,28 @@ components:
           type: string
           description: User password
           example: securePassword123
-    AuthResponse:
+    LoginResponse:
       type: object
       properties:
-        user:
-          $ref: '#/components/schemas/User'
         accessToken:
+            type: string
+            description: JWT access token
+            example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        refreshToken:
           type: string
-          description: JWT access token
+          description: Refresh token
           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-        tokenType:
+    RefreshResponse:
+      type: object
+      properties:
+        accessToken:
+            type: string
+            description: JWT access token
+            example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        refreshToken:
           type: string
-          enum: [Bearer]
-          example: Bearer
-        expiresIn:
-          type: integer
-          description: Token expiration time in seconds
-          example: 3600
+          description: Refresh token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     User:
       type: object
       properties:
@@ -215,53 +280,9 @@ components:
           format: date-time
           description: User last update timestamp
           example: 2023-01-01T00:00:00Z
-    BadRequestError:
-      type: object
-      properties:
-        statusCode:
-          type: integer
-          example: 400
-        message:
+        deletedAt:
           type: string
-          example: Missing required parameters
-        error:
-          type: string
-          example: Bad Request
-    ValidationError:
-      type: object
-      properties:
-        statusCode:
-          type: integer
-          example: 422
-        message:
-          type: array
-          items:
-            type: string
-          example: ["username must be at least 3 characters", "email must be a valid email"]
-        error:
-          type: string
-          example: Unprocessable Entity
-    ConflictError:
-      type: object
-      properties:
-        statusCode:
-          type: integer
-          example: 409
-        message:
-          type: string
-          example: User with this username or email already exists
-        error:
-          type: string
-          example: Conflict
-    UnauthorizedError:
-      type: object
-      properties:
-        statusCode:
-          type: integer
-          example: 401
-        message:
-          type: string
-          example: Invalid credentials
-        error:
-          type: string
-          example: Unauthorized
+          nullable: true
+          format: date-time
+          description: User soft deletion timestamp
+          example: null

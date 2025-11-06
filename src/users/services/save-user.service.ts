@@ -11,11 +11,11 @@ export class SaveUserService implements SaveUserUseCase {
     const { email, username, password } = payload;
 
     if (await this.userRepository.findByEmail(email)) {
-      throw new ConflictException('email already exists');
+      throw new ConflictException('Email already exists');
     }
 
     if (await this.userRepository.findByUsername(username)) {
-      throw new ConflictException('username already exists');
+      throw new ConflictException('Username already exists');
     }
 
     const user = new User();
