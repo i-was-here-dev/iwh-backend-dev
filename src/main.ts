@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { BadRequestException, UnprocessableEntityException, ValidationError, ValidationPipe } from '@nestjs/common';
+import { SwaggerConfig } from './infrastructure/openapi/configs/swagger.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,6 +21,10 @@ async function bootstrap() {
       },
     }),
   );
+
+  SwaggerConfig.setup(app);
   await app.listen(process.env.PORT ?? 3000);
+  console.log('🚀 Application is running on: http://localhost:3000');
+  console.log('📚 Swagger UI available at: http://localhost:3000/api-docs');
 }
 bootstrap();
