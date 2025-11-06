@@ -2,7 +2,7 @@ import { IsEmail, IsNotEmpty, Matches, MinLength } from 'class-validator';
 
 export class RegisterRequestDto {
   @IsNotEmpty()
-  @IsEmail()
+  @IsEmail({}, { message: 'Email must be a valid email' })
   email: string;
 
   @IsNotEmpty()
