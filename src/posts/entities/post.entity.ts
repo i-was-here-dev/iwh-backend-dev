@@ -4,6 +4,7 @@ import {
   DeleteDateColumn,
   Entity,
   Generated,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -18,6 +19,7 @@ export class Post {
 
   @Column()
   @Generated('uuid')
+  @Index('IDX_UUID')
   uuid: string;
 
   @ManyToOne(() => Profile, (profile) => profile.post)

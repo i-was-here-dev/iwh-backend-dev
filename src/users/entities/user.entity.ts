@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, Generated, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, Generated, Index, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Profile } from './user.profile.entity';
 
 @Entity('users')
@@ -8,6 +8,7 @@ export class User {
 
   @Column()
   @Generated('uuid')
+  @Index('IDX_UUID')
   uuid: string;
 
   @OneToOne(() => Profile, (profile) => profile.user)
