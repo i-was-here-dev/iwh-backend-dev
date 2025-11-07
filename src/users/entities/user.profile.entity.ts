@@ -4,7 +4,6 @@ import {
   DeleteDateColumn,
   Entity,
   Generated,
-  Index,
   JoinColumn,
   OneToMany,
   OneToOne,
@@ -21,7 +20,6 @@ export class Profile {
 
   @Column()
   @Generated('uuid')
-  @Index('IDX_UUID')
   uuid: string;
 
   @OneToOne(() => User, (user) => user.profile)
