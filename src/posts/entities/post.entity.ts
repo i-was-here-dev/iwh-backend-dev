@@ -4,6 +4,7 @@ import {
   DeleteDateColumn,
   Entity,
   Generated,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -12,16 +13,19 @@ import {
 import { Profile } from 'src/users/entities/user.profile.entity';
 
 @Entity('posts')
+@Index(['longitude', 'latitude'])
 export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   @Generated('uuid')
+  @Index('idx_posts_uuid')
   uuid: string;
 
   @ManyToOne(() => Profile, (profile) => profile.post)
   @JoinColumn()
+  @Index('idx_posts_profile_id')
   profile: Profile;
 
   @Column({ name: 'title' })
@@ -33,11 +37,11 @@ export class Post {
   @Column({ name: 'image_url' })
   imageUrl: string;
 
-  @Column({ name: 'x', type: 'float' })
-  x: number;
+  @Column({ name: 'latitude', type: 'float' })
+  latitude: number;
 
-  @Column({ name: 'y', type: 'float' })
-  y: number;
+  @Column({ name: 'longitude', type: 'float' })
+  longitude: number;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
