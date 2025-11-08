@@ -34,7 +34,7 @@ export class Post {
   @Column({ name: 'body', type: 'text' })
   body: string;
 
-  @Column({ name: 'image_url' })
+  @Column({ name: 'image_url', nullable: true })
   imageUrl: string;
 
   @Column({ name: 'latitude', type: 'float' })
