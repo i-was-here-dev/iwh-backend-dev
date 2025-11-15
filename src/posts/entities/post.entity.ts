@@ -7,10 +7,12 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Profile } from 'src/users/entities/user.profile.entity';
+import { Comment } from './comment.entity';
 
 type PostData = {
   title: string;
@@ -36,6 +38,9 @@ export class Post {
   @JoinColumn()
   @Index('idx_posts_profile_id')
   profile: Profile;
+
+  @OneToMany(() => Comment, (comment) => comment.post)
+  comment: Comment[];
 
   @Column({ name: 'title' })
   title: string;

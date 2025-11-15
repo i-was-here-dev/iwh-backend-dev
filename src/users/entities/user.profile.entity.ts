@@ -12,6 +12,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { Post } from 'src/posts/entities/post.entity';
+import { Comment } from 'src/posts/entities/comment.entity';
 
 @Entity()
 export class Profile {
@@ -29,6 +30,9 @@ export class Profile {
   @OneToMany(() => Post, (post) => post.profile)
   post: Post[];
 
+  @OneToMany(() => Comment, (comment) => comment.profile)
+  comment: Comment[];
+
   @Column({ unique: true })
   nickname: string;
 
@@ -44,6 +48,6 @@ export class Profile {
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: Date;
 
-  @UpdateDateColumn({ name: 'update_at' })
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 }
