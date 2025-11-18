@@ -17,7 +17,7 @@ type PostData = {
   body: string;
   latitude: number;
   longitude: number;
-  imageUrl?: string;
+  imageName?: string;
   user: User;
 };
 
@@ -43,8 +43,8 @@ export class Post {
   @Column({ name: 'body', type: 'text' })
   body: string;
 
-  @Column({ name: 'image_url', nullable: true })
-  imageUrl: string;
+  @Column({ name: 'image_name', nullable: true })
+  imageName: string;
 
   @Column({ name: 'latitude', type: 'float' })
   latitude: number;
@@ -67,7 +67,7 @@ export class Post {
     post.body = postData.body;
     post.latitude = postData.latitude;
     post.longitude = postData.longitude;
-    post.imageUrl = postData.imageUrl || null;
+    post.imageName = postData.imageName || null;
     post.user = postData.user;
     return post;
   }
