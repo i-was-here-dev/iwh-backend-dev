@@ -10,7 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Profile } from 'src/users/entities/user.profile.entity';
+import { User } from 'src/users/entities/user.entity';
 
 type PostData = {
   title: string;
@@ -18,7 +18,7 @@ type PostData = {
   latitude: number;
   longitude: number;
   imageUrl?: string;
-  profile: Profile;
+  user: User;
 };
 
 @Entity('posts')
@@ -32,10 +32,10 @@ export class Post {
   @Index('idx_posts_uuid')
   uuid: string;
 
-  @ManyToOne(() => Profile, (profile) => profile.post)
+  @ManyToOne(() => User, (user) => user.posts)
   @JoinColumn()
-  @Index('idx_posts_profile_id')
-  profile: Profile;
+  @Index('idx_posts_user_id')
+  user: User;
 
   @Column({ name: 'title' })
   title: string;
@@ -68,7 +68,7 @@ export class Post {
     post.latitude = postData.latitude;
     post.longitude = postData.longitude;
     post.imageUrl = postData.imageUrl || null;
-    post.profile = postData.profile;
+    post.user = postData.user;
     return post;
   }
 }
