@@ -40,7 +40,7 @@ export class Post {
   profile: Profile;
 
   @OneToMany(() => Comment, (comment) => comment.post)
-  comment: Comment[];
+  comments: Comment[];
 
   @Column({ name: 'title' })
   title: string;

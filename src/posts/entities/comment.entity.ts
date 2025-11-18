@@ -21,11 +21,11 @@ export class Comment {
   @Generated('uuid')
   uuid: string;
 
-  @ManyToOne(() => Post, (post) => post.comment)
+  @ManyToOne(() => Post, (post) => post.comments)
   @JoinColumn()
   post: Post;
 
-  @ManyToOne(() => Profile, (profile) => profile.comment)
+  @ManyToOne(() => Profile, (profile) => profile.comments)
   @JoinColumn()
   profile: Profile;
 

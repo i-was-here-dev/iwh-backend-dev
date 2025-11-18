@@ -31,7 +31,7 @@ export class Profile {
   post: Post[];
 
   @OneToMany(() => Comment, (comment) => comment.profile)
-  comment: Comment[];
+  comments: Comment[];
 
   @Column({ unique: true })
   nickname: string;
