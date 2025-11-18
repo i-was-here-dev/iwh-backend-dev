@@ -5,12 +5,12 @@ import { PostRepositoryInterface } from '../post-repository.interface';
 export class PostRepository implements PostRepositoryInterface {
   constructor(private readonly repository: Repository<Post>) {}
 
-  async findByProfileId(profileId: number): Promise<Post[] | null> {
+  async findByUserId(userId: number): Promise<Post[] | null> {
     return await this.repository.find({
       where: {
-        profile: { id: profileId },
+        user: { id: userId },
       },
-      relations: ['profile'],
+      relations: ['user'],
     });
   }
 
