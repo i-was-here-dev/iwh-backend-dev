@@ -11,7 +11,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Profile } from 'src/users/entities/user.profile.entity';
+import { User } from 'src/users/entities/user.entity';
 import { Comment } from './comment.entity';
 
 type PostData = {
@@ -19,8 +19,8 @@ type PostData = {
   body: string;
   latitude: number;
   longitude: number;
-  imageUrl?: string;
-  profile: Profile;
+  imageName?: string;
+  user: User;
 };
 
 @Entity('posts')
@@ -34,10 +34,10 @@ export class Post {
   @Index('idx_posts_uuid')
   uuid: string;
 
-  @ManyToOne(() => Profile, (profile) => profile.post)
+  @ManyToOne(() => User, (user) => user.posts)
   @JoinColumn()
-  @Index('idx_posts_profile_id')
-  profile: Profile;
+  @Index('idx_posts_user_id')
+  user: User;
 
   @OneToMany(() => Comment, (comment) => comment.post)
   comments: Comment[];
@@ -48,8 +48,8 @@ export class Post {
   @Column({ name: 'body', type: 'text' })
   body: string;
 
-  @Column({ name: 'image_url', nullable: true })
-  imageUrl: string;
+  @Column({ name: 'image_name', nullable: true })
+  imageName: string;
 
   @Column({ name: 'latitude', type: 'float' })
   latitude: number;
@@ -72,8 +72,8 @@ export class Post {
     post.body = postData.body;
     post.latitude = postData.latitude;
     post.longitude = postData.longitude;
-    post.imageUrl = postData.imageUrl || null;
-    post.profile = postData.profile;
+    post.imageName = postData.imageName || null;
+    post.user = postData.user;
     return post;
   }
 }

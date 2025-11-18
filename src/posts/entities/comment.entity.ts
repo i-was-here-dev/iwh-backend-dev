@@ -10,7 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Post } from './post.entity';
-import { Profile } from 'src/users/entities/user.profile.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Entity('comments')
 export class Comment {
@@ -25,9 +25,9 @@ export class Comment {
   @JoinColumn()
   post: Post;
 
-  @ManyToOne(() => Profile, (profile) => profile.comments)
+  @ManyToOne(() => User, (user) => user.comments)
   @JoinColumn()
-  profile: Profile;
+  user: User;
 
   @Column({ name: 'body', type: 'text' })
   body: string;
