@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { UserProfile } from './user-profile.entity';
 import { Post } from 'src/posts/entities/post.entity';
+import { Comment } from 'src/posts/entities/comment.entity';
 
 @Entity('users')
 export class User {
@@ -26,6 +27,9 @@ export class User {
 
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
 
   @Column({ name: 'username', unique: true })
   username: string;
