@@ -13,6 +13,7 @@ import {
 } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Comment } from './comment.entity';
+import { Approval } from './approval.entity';
 
 type PostData = {
   title: string;
@@ -46,6 +47,9 @@ export class Post {
 
   @OneToMany(() => Comment, (comment) => comment.post)
   comments: Comment[];
+
+  @OneToMany(() => Approval, (approval) => approval.post)
+  approvals: Approval[];
 
   @Column({ name: 'title' })
   title: string;

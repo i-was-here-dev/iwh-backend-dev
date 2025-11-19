@@ -12,6 +12,7 @@ import {
 import { UserProfile } from './user-profile.entity';
 import { Post } from 'src/posts/entities/post.entity';
 import { Comment } from 'src/posts/entities/comment.entity';
+import { Approval } from 'src/posts/entities/approval.entity';
 
 @Entity('users')
 export class User {
@@ -30,6 +31,9 @@ export class User {
 
   @OneToMany(() => Comment, (comment) => comment.user)
   comments: Comment[];
+
+  @OneToMany(() => Approval, (approval) => approval.user)
+  approvals: Approval[];
 
   @Column({ name: 'username', unique: true })
   username: string;
