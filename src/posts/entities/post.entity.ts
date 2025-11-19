@@ -20,7 +20,7 @@ type PostData = {
   latitude: number;
   longitude: number;
   imageName?: string;
-  user: User;
+  userId: number;
 };
 
 @Entity('posts')
@@ -80,7 +80,7 @@ export class Post {
     post.latitude = postData.latitude;
     post.longitude = postData.longitude;
     post.imageName = postData.imageName || null;
-    post.user = postData.user;
+    post.userId = postData.userId;
     return post;
   }
 }
