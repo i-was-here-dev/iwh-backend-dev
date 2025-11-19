@@ -4,6 +4,8 @@ import { PostsDiTokens } from './di/posts-tokens.di';
 import { Post } from './entities/post.entity';
 import { DatabaseDiTokens } from 'src/infrastructure/database/di/database-tokens.di';
 import { PostRepository } from './repositories/postgres/post.repository';
+import { PostRepositoryInterface } from './repositories/post-repository.interface';
+import { SavePostService } from './services/save-post.service';
 
 const repositoryProviders: Provider[] = [
   {
@@ -18,7 +20,15 @@ const repositoryProviders: Provider[] = [
   },
 ];
 
+const serviceProviders: Provider[] = [
+  {
+    provide: PostsDiTokens.SavePostService,
+    useFactory: (postRepository: PostRepositoryInterface) => new SavePostService(postRepository),
+    inject: [PostsDiTokens.PostRepositoryInterface],
+  },
+];
+
 @Module({
-  providers: [...repositoryProviders],
+  providers: [...repositoryProviders, ...serviceProviders],
 })
 export class PostsModule {}
