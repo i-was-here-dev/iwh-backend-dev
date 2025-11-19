@@ -32,6 +32,10 @@ export class Post {
   @Index('idx_posts_uuid')
   uuid: string;
 
+  @Column()
+  @Index()
+  userId: number;
+
   @ManyToOne(() => User, (user) => user.posts)
   @JoinColumn()
   @Index('idx_posts_user_id')
