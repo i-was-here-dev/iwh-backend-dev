@@ -6,6 +6,8 @@ import { DatabaseDiTokens } from 'src/infrastructure/database/di/database-tokens
 import { PostRepository } from './repositories/postgres/post.repository';
 import { PostRepositoryInterface } from './repositories/post-repository.interface';
 import { SavePostService } from './services/save-post.service';
+import { Approval } from './entities/approval.entity';
+import { ApprovalRepository } from './repositories/postgres/approval.repository';
 
 const repositoryProviders: Provider[] = [
   {
@@ -17,6 +19,16 @@ const repositoryProviders: Provider[] = [
     provide: PostsDiTokens.PostRepositoryInterface,
     useFactory: (repository: Repository<Post>) => new PostRepository(repository),
     inject: [PostsDiTokens.PostgresPostRepositoryInterface],
+  },
+  {
+    provide: PostsDiTokens.PostgresApprovalRepositoryInterface,
+    useFactory: (dataSource: DataSource) => dataSource.getRepository(Approval),
+    inject: [DatabaseDiTokens.PostgresDataSource],
+  },
+  {
+    provide: PostsDiTokens.ApprovalRepositoryInterface,
+    useFactory: (repository: Repository<Approval>) => new ApprovalRepository(repository),
+    inject: [PostsDiTokens.PostgresApprovalRepositoryInterface],
   },
 ];
 
