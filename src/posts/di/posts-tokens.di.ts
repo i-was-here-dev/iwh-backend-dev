@@ -5,4 +5,5 @@ export class PostsDiTokens {
   public static readonly PostgresApprovalRepositoryInterface: string = 'PostgresApprovalRepositoryInterface';
 
   public static readonly SavePostService: string = 'SavePostService';
+  public static readonly SaveApprovalService: string = 'SaveApprovalService';
 }

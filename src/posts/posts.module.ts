@@ -8,6 +8,8 @@ import { PostRepositoryInterface } from './repositories/post-repository.interfac
 import { SavePostService } from './services/save-post.service';
 import { Approval } from './entities/approval.entity';
 import { ApprovalRepository } from './repositories/postgres/approval.repository';
+import { ApprovalRepositoryInterface } from './repositories/approval-repository.interface';
+import { SaveApprovalService } from './services/save-approval.service';
 
 const repositoryProviders: Provider[] = [
   {
@@ -37,6 +39,12 @@ const serviceProviders: Provider[] = [
     provide: PostsDiTokens.SavePostService,
     useFactory: (postRepository: PostRepositoryInterface) => new SavePostService(postRepository),
     inject: [PostsDiTokens.PostRepositoryInterface],
+  },
+  {
+    provide: PostsDiTokens.SaveApprovalService,
+    useFactory: (approvalRepository: ApprovalRepositoryInterface, postRepository: PostRepositoryInterface) =>
+      new SaveApprovalService(approvalRepository, postRepository),
+    inject: [PostsDiTokens.ApprovalRepositoryInterface, PostsDiTokens.PostRepositoryInterface],
   },
 ];
 
