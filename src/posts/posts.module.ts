@@ -10,6 +10,7 @@ import { Approval } from './entities/approval.entity';
 import { ApprovalRepository } from './repositories/postgres/approval.repository';
 import { ApprovalRepositoryInterface } from './repositories/approval-repository.interface';
 import { SaveApprovalService } from './services/save-approval.service';
+import { FindPostsByUserIdService } from './services/find-posts-by-user-id.service';
 
 const repositoryProviders: Provider[] = [
   {
@@ -45,6 +46,11 @@ const serviceProviders: Provider[] = [
     useFactory: (approvalRepository: ApprovalRepositoryInterface, postRepository: PostRepositoryInterface) =>
       new SaveApprovalService(approvalRepository, postRepository),
     inject: [PostsDiTokens.ApprovalRepositoryInterface, PostsDiTokens.PostRepositoryInterface],
+  },
+  {
+    provide: PostsDiTokens.FindPostsByUserIdService,
+    useFactory: (postRepository: PostRepositoryInterface) => new FindPostsByUserIdService(postRepository),
+    inject: [PostsDiTokens.PostRepositoryInterface],
   },
 ];
 
