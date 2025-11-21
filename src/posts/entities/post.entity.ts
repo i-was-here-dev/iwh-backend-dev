@@ -7,18 +7,22 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Profile } from 'src/users/entities/user.profile.entity';
+import { User } from 'src/users/entities/user.entity';
+import { Comment } from './comment.entity';
+import { Approval } from './approval.entity';
 
 type PostData = {
   title: string;
   body: string;
   latitude: number;
   longitude: number;
-  imageUrl?: string;
-  profile: Profile;
+  imageName?: string;
+  userId: number;
+  videoName?: string;
 };
 
 @Entity('posts')
@@ -32,10 +36,20 @@ export class Post {
   @Index('idx_posts_uuid')
   uuid: string;
 
-  @ManyToOne(() => Profile, (profile) => profile.post)
+  @Column()
+  @Index()
+  userId: number;
+
+  @ManyToOne(() => User, (user) => user.posts)
   @JoinColumn()
-  @Index('idx_posts_profile_id')
-  profile: Profile;
+  @Index('idx_posts_user_id')
+  user: User;
+
+  @OneToMany(() => Comment, (comment) => comment.post)
+  comments: Comment[];
+
+  @OneToMany(() => Approval, (approval) => approval.post)
+  approvals: Approval[];
 
   @Column({ name: 'title' })
   title: string;
@@ -43,8 +57,11 @@ export class Post {
   @Column({ name: 'body', type: 'text' })
   body: string;
 
-  @Column({ name: 'image_url', nullable: true })
-  imageUrl: string;
+  @Column({ name: 'image_name', nullable: true })
+  imageName: string;
+
+  @Column({ name: 'video_name', nullable: true })
+  videoName: string;
 
   @Column({ name: 'latitude', type: 'float' })
   latitude: number;
@@ -67,8 +84,9 @@ export class Post {
     post.body = postData.body;
     post.latitude = postData.latitude;
     post.longitude = postData.longitude;
-    post.imageUrl = postData.imageUrl || null;
-    post.profile = postData.profile;
+    post.imageName = postData.imageName || null;
+    post.videoName = postData.videoName || null;
+    post.userId = postData.userId;
     return post;
   }
 }

@@ -1,6 +1,8 @@
 export class UsersDiTokens {
   public static readonly UserRepositoryInterface: string = 'UserRepositoryInterface';
+  public static readonly UserProfileRepositoryInterface: string = 'UserProfileRepositoryInterface';
   public static readonly PostgresUserRepositoryInterface: string = 'PostgresUserRepository';
+  public static readonly PostgresUserProfileRepositoryInterface: string = 'PostgresUserProfileRepository';
 
   public static readonly SaveUserService: string = 'SaveUserService';
   public static readonly FindUserByEmailService: string = 'FindUserByEmailService';

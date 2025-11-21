@@ -1,9 +1,10 @@
 import { Post } from 'src/posts/entities/post.entity';
+import { BoundingBoxQuery } from '../interfaces/bounding-box-query.interface';
 
 export interface PostRepositoryInterface {
-  findByProfileId(profileId: number): Promise<Post[] | null>;
+  findByUserId(userId: number): Promise<Post[] | null>;
   findByUuid(uuid: string): Promise<Post | null>;
-  findByBoundingBox(centerX: number, centerY: number, boxLength: number, boxWidth: number): Promise<Post[] | null>;
+  findInBoundingBox(query: BoundingBoxQuery): Promise<Post[] | null>;
   save(post: Post): Promise<Post>;
   findByUuid(uuid: string): Promise<Post | null>;
   softDelete(post: Post): Promise<boolean>;
