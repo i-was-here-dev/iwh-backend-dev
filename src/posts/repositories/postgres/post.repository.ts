@@ -1,6 +1,7 @@
 import { Post } from 'src/posts/entities/post.entity';
 import { Between, Repository, UpdateResult } from 'typeorm';
 import { PostRepositoryInterface } from '../post-repository.interface';
+import { BoundingBoxQuery } from 'src/posts/interfaces/bounding-box-query.interface';
 
 export class PostRepository implements PostRepositoryInterface {
   constructor(private readonly repository: Repository<Post>) {}
@@ -33,18 +34,25 @@ export class PostRepository implements PostRepositoryInterface {
     return false;
   }
 
-  async findByBoundingBox(centerLatitude: number, centerLongitude: number, boxLength: number, boxWidth: number): Promise<Post[] | null> {
-    const minLatitude = centerLatitude - boxWidth / 2;
-    const maxLatitude = centerLatitude + boxWidth / 2;
-    const minLongitude = centerLongitude - boxLength / 2;
-    const maxLongitude = centerLongitude + boxLength / 2;
+  async findInBoundingBox(query: BoundingBoxQuery): Promise<Post[] | null> {
+    const minLatitude = query.centerLatitude - query.boxWidth / 2;
+    const maxLatitude = query.centerLatitude + query.boxWidth / 2;
+    const minLongitude = query.centerLongitude - query.boxLength / 2;
+    const maxLongitude = query.centerLongitude + query.boxLength / 2;
 
-    return await this.repository.find({
-      where: {
-        latitude: Between(minLatitude, maxLatitude),
-        longitude: Between(minLongitude, maxLongitude),
-      },
-      relations: ['profile'],
-    });
+    return await this.repository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.profile', 'profile')
+      .where('post.latitude BETWEEN :minLatitude AND :maxLatitude', {
+        minLatitude: minLatitude,
+        maxLatitude: maxLatitude,
+      })
+      .andWhere('post.longitude BETWEEN :minLongitude AND :maxLongitude', {
+        minLongitude: minLongitude,
+        maxLongitude: maxLongitude,
+      })
+      .orderBy('RANDOM()')
+      .take(query.limit)
+      .getMany();
   }
 }
