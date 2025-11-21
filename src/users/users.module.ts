@@ -10,6 +10,8 @@ import { FindUserByUsernameService } from './services/find-user-by-username.serv
 import { FindUserByUuidService } from './services/find-user-by-uuid.service';
 import { SaveUserService } from './services/save-user.service';
 import { UserController } from './controllers/user.controller';
+import { UserProfile } from './entities/user-profile.entity';
+import { UserProfileRepository } from './repositories/postgres/user-profile.repository';
 
 const repositoryProvider: Array<Provider> = [
   {
@@ -21,6 +23,16 @@ const repositoryProvider: Array<Provider> = [
     provide: UsersDiTokens.UserRepositoryInterface,
     useFactory: (repository: Repository<User>) => new UserRepository(repository),
     inject: [UsersDiTokens.PostgresUserRepositoryInterface],
+  },
+  {
+    provide: UsersDiTokens.PostgresUserProfileRepositoryInterface,
+    useFactory: (dataSource: DataSource) => dataSource.getRepository(UserProfile),
+    inject: [DatabaseDiTokens.PostgresDataSource],
+  },
+  {
+    provide: UsersDiTokens.UserProfileRepositoryInterface,
+    useFactory: (repository: Repository<UserProfile>) => new UserProfileRepository(repository),
+    inject: [UsersDiTokens.PostgresUserProfileRepositoryInterface],
   },
 ];
 
