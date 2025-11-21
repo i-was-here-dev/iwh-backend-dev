@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, Matches, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Matches, MinLength } from 'class-validator';
 
 export class RegisterRequestDto {
   @IsNotEmpty()
@@ -14,4 +14,9 @@ export class RegisterRequestDto {
     message: 'Password must be at least 8 characters long, contain at least one uppercase letter and one digit',
   })
   password: string;
+
+  @IsNotEmpty()
+  nickname: string;
+
+  profilePictureName?: string;
 }

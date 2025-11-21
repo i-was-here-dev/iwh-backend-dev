@@ -7,6 +7,10 @@ export class RegisterResponseDto {
     createdAt: Date;
     updatedAt: Date;
   };
+  profile: {
+    nickname: string;
+    profilePictureName: string;
+  };
   refreshToken: string;
   accessToken: string;
 }
