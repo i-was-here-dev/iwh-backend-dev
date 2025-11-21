@@ -61,7 +61,7 @@ const serviceProvider: Array<Provider> = [
   },
   {
     provide: UsersDiTokens.FindProfileByUserIdService,
-    useFactory: (UserProfileRepository: UserProfileRepositoryInterface) => new FindProfileByUserIdService(UserProfileRepository),
+    useFactory: (userProfileRepository: UserProfileRepositoryInterface) => new FindProfileByUserIdService(userProfileRepository),
     inject: [UsersDiTokens.UserProfileRepositoryInterface],
   },
 ];
