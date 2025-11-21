@@ -4,6 +4,7 @@ import {
   DeleteDateColumn,
   Entity,
   Generated,
+  Index,
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -20,15 +21,20 @@ export class UserProfile {
   @Generated('uuid')
   uuid: string;
 
+  @Column()
+  @Index()
+  userId: number;
+
   @OneToOne(() => User, (user) => user.profile)
   @JoinColumn()
+  @Index('idx_user_profile_user_id')
   user: User;
 
   @Column({ unique: true })
   nickname: string;
 
   @Column({ name: 'imageURL' })
-  profileImageUrl: string;
+  profilePictureName: string;
 
   @Column()
   points: number;

@@ -10,4 +10,5 @@ export class UsersDiTokens {
   public static readonly FindUserByIdService: string = 'FindUserByIdService';
   public static readonly FindUserByUuidService: string = 'FindUserByUuidService';
   public static readonly FindProfileByUserIdService: string = 'FindProfileByUserIdService';
+  public static readonly SaveUserProfileService: string = 'SaveUserProfileService';
 }
