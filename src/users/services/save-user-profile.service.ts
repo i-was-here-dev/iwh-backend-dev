@@ -6,11 +6,12 @@ export class SaveUserProfileService implements SaveUserProfileUseCase {
   constructor(private readonly userProfileRepository: UserProfileRepositoryInterface) {}
 
   async execute(payload: SaveUserProfilePort): Promise<UserProfile> {
-    const { nickname, profilePictureName } = payload;
+    const { nickname, profilePictureName, userId } = payload;
 
     const profile = new UserProfile();
     profile.nickname = nickname;
     profile.profilePictureName = profilePictureName;
+    profile.userId = userId;
 
     return await this.userProfileRepository.save(profile);
   }
