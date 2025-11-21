@@ -3,7 +3,7 @@ import { GenerateAuthTokensUseCase } from '../services/usecases/generate-auth-to
 import { AuthDiTokens } from '../di/auth-tokens.di';
 import { RegisterRequestDto } from '../dto/register-request.dto';
 import { RegisterResponseDto } from '../dto/register-response.dto';
-import { SaveUserUseCase } from 'src/users/services/usecases/save-user.usecase';
+import { SaveUserServiceResponse, SaveUserUseCase } from 'src/users/services/usecases/save-user.usecase';
 import { UsersDiTokens } from 'src/users/di/users-tokens.di';
 import { User } from 'src/users/entities/user.entity';
 import { JwtTokens } from '../types/jwt-tokens.type';
@@ -32,17 +32,31 @@ export class AuthController {
   @Public()
   @Post('/register')
   async register(@Body() payload: RegisterRequestDto): Promise<RegisterResponseDto> {
-    const user: User = await this.saveUserService.execute({ username: payload.username, email: payload.email, password: payload.password });
-    const tokens: JwtTokens = await this.generateAuthTokensService.execute({ userId: user.id, username: user.username, email: user.email });
+    const saveUserServiceResponse: SaveUserServiceResponse = await this.saveUserService.execute({
+      username: payload.username,
+      email: payload.email,
+      password: payload.password,
+      nickname: payload.nickname,
+      profilePictureName: payload.profilePictureName,
+    });
+    const tokens: JwtTokens = await this.generateAuthTokensService.execute({
+      userId: saveUserServiceResponse.user.id,
+      username: saveUserServiceResponse.user.username,
+      email: saveUserServiceResponse.user.email,
+    });
 
     return {
       user: {
-        uuid: user.uuid,
-        username: user.username,
-        email: user.email,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-        deletedAt: user.deletedAt,
+        uuid: saveUserServiceResponse.user.uuid,
+        username: saveUserServiceResponse.user.username,
+        email: saveUserServiceResponse.user.email,
+        createdAt: saveUserServiceResponse.user.createdAt,
+        updatedAt: saveUserServiceResponse.user.updatedAt,
+        deletedAt: saveUserServiceResponse.user.deletedAt,
+      },
+      profile: {
+        nickname: saveUserServiceResponse.profile.nickname,
+        profilePictureName: saveUserServiceResponse.profile.profilePictureName,
       },
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,

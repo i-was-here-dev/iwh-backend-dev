@@ -30,13 +30,13 @@ export class UserProfile {
   @Index('idx_user_profile_user_id')
   user: User;
 
-  @Column({ unique: true })
+  @Column()
   nickname: string;
 
-  @Column({ name: 'imageURL' })
+  @Column({ name: 'profile_picture_name', nullable: true })
   profilePictureName: string;
 
-  @Column()
+  @Column({ nullable: true })
   points: number;
 
   @CreateDateColumn({ name: 'created_at' })
