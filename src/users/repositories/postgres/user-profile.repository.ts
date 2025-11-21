@@ -5,9 +5,9 @@ import { Repository } from 'typeorm';
 export class UserProfileRepository implements UserProfileRepositoryInterface {
   constructor(private readonly repository: Repository<UserProfile>) {}
 
-  async findByUserId(id: number): Promise<UserProfile | null> {
+  async findByUserId(userId: number): Promise<UserProfile | null> {
     return await this.repository.findOne({
-      where: { id: id },
+      where: { user: { id: userId } },
     });
   }
   async findByUuid(uuid: string): Promise<UserProfile | null> {
