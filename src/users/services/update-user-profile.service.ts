@@ -12,8 +12,13 @@ export class UpdateProfileService implements UpdateProfileUseCase {
     const profile: UserProfile | null = await this.userProfileRepository.findByUserId(userId);
     if (!profile) throw new NotFoundException();
 
-    profile.nickname = nickname;
-    profile.profilePictureName = profilePictureName;
+    if (nickname !== null) {
+      profile.nickname = nickname;
+    }
+
+    if (profilePictureName !== null) {
+      profile.profilePictureName = profilePictureName;
+    }
 
     return await this.userProfileRepository.save(profile);
   }
