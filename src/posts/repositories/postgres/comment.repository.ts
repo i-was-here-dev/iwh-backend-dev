@@ -5,12 +5,20 @@ import { Repository, UpdateResult } from 'typeorm';
 export class CommentRepository implements CommentRepositoryInterface {
   constructor(private readonly repository: Repository<Comment>) {}
 
+  async findByUserId(userId: number): Promise<Comment[] | null> {
+    return await this.repository.find({
+      where: {
+        user: { id: userId },
+      },
+      relations: ['user'],
+    });
+  }
+
   async findByPostId(postId: number): Promise<Comment[] | null> {
     return await this.repository.find({
       where: {
         post: { id: postId },
       },
-      relations: ['post'],
     });
   }
 
