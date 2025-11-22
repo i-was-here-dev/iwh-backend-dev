@@ -4,6 +4,7 @@ import {
   DeleteDateColumn,
   Entity,
   Generated,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -11,6 +12,12 @@ import {
 } from 'typeorm';
 import { Post } from './post.entity';
 import { User } from 'src/users/entities/user.entity';
+
+type CommentData = {
+  userId: number;
+  postId: number;
+  body: string;
+};
 
 @Entity('comments')
 export class Comment {
@@ -20,6 +27,14 @@ export class Comment {
   @Column()
   @Generated('uuid')
   uuid: string;
+
+  @Column()
+  @Index()
+  userId: number;
+
+  @Column()
+  @Index()
+  postId: number;
 
   @ManyToOne(() => Post, (post) => post.comments)
   @JoinColumn()
@@ -40,4 +55,12 @@ export class Comment {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  static create(commentData: CommentData): Comment {
+    const comment = new Comment();
+    comment.userId = commentData.userId;
+    comment.postId = commentData.postId;
+    comment.body = commentData.body;
+    return comment;
+  }
 }
