@@ -77,16 +77,4 @@ export class Post {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
-
-  static create(postData: PostData): Post {
-    const post = new Post();
-    post.title = postData.title;
-    post.body = postData.body;
-    post.latitude = postData.latitude;
-    post.longitude = postData.longitude;
-    post.imageName = postData.imageName || null;
-    post.videoName = postData.videoName || null;
-    post.userId = postData.userId;
-    return post;
-  }
 }
