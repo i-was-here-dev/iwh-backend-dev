@@ -1,19 +1,21 @@
-import { Controller, Inject, Get, Param } from '@nestjs/common';
+import { Controller, Inject, Get } from '@nestjs/common';
 import { UserProfile } from '../entities/user-profile.entity';
 import { UsersDiTokens } from '../di/users-tokens.di';
 import { FindProfileByUserIdPort, FindProfileByUserIdUseCase } from '../services/usecases/find-profile-by-user.id.usecase';
 import { FindProfileByUserIdResponseDto } from '../dto/find-profile-by-user-id-response.dto';
+import { UserData } from 'src/auth/decorators/user-data.decorator';
+import { JwtAuthGuardResponse } from 'src/auth/interfaces/jwt-auth-guard-response.interface';
 
-@Controller('profile')
+@Controller('profile/me')
 export class ProfileController {
   constructor(
     @Inject(UsersDiTokens.FindProfileByUserIdService)
     private readonly findProfileByUserIdService: FindProfileByUserIdUseCase,
   ) {}
 
-  @Get(':id')
-  async findByUserId(@Param('id') id: number): Promise<FindProfileByUserIdResponseDto> {
-    const payload: FindProfileByUserIdPort = { id };
+  @Get()
+  async findByUserId(@UserData() user: JwtAuthGuardResponse): Promise<FindProfileByUserIdResponseDto> {
+    const payload: FindProfileByUserIdPort = { id: user.id };
     const profile: UserProfile = await this.findProfileByUserIdService.execute(payload);
 
     return {
@@ -21,6 +23,8 @@ export class ProfileController {
       nickname: profile.nickname,
       points: profile.points,
       profilePictureName: profile.profilePictureName,
+      posts: profile.user.posts,
+      comments: profile.user.comments,
       deletedAt: profile.deletedAt,
       createdAt: profile.createdAt,
       updatedAt: profile.updatedAt,

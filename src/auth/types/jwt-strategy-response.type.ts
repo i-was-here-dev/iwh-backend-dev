@@ -1,5 +1,5 @@
 export type JwtStrategyResponse = {
-  userId: number;
+  id: number;
   username: string;
   email: string;
 };
