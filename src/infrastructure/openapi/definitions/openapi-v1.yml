@@ -95,7 +95,26 @@ paths:
                 $ref: '#/components/schemas/RefreshResponse'
         '401':
           $ref: '#/components/responses/RefreshUnauthorizedError'
-
+  /profile/me:
+    get:
+      operationId: findProfileByUserId
+      summary: Get current user's profile
+      description: Retrieve the authenticated user's profile information including posts, comments, and profile details
+      security:
+        - bearerAuth: []
+      tags:
+        - Profile
+      responses:
+        '200':
+          description: User profile successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+        '401':
+          $ref: '#/components/responses/JwtUnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
 components:
   securitySchemes: 
     bearerAuth:
@@ -167,7 +186,17 @@ components:
           example:
             message: Parameters conflict with the current state of the server
             error: Conflict
-            statusCode: 409 
+            statusCode: 409
+    NotFoundError:
+      description: The requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: 'Not Found'
+            error: 'Not Found'
+            statusCode: 404 
   schemas:
     ErrorResponse:
       type: object
@@ -253,6 +282,29 @@ components:
           type: string
           description: Refresh token
           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+    SavePostRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Post title
+          example: Sunny day
+        body:
+          type: string
+          description: Post body
+          example: Today is a sunny day
+        longitude:
+          type: number
+          description: Post location longitude
+          example: 40.689
+        latitude:
+          type: number
+          description: Post location latitude
+          example: 74.044
+        videoName: 
+          type: string
+          description: Post video file name
+          example:  
     User:
       type: object
       properties:
@@ -286,3 +338,91 @@ components:
           format: date-time
           description: User soft deletion timestamp
           example: null
+    ProfileResponse:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          description: Profile UUID
+          example: 123e4567-e89b-12d3-a456-426614174001
+        nickname:
+          type: string
+          description: User's display nickname
+          example: JohnDoe2024
+        points:
+          type: integer
+          description: User's accumulated points
+          example: 1250
+        profilePictureName:
+          type: string
+          description: Profile picture filename
+          example: profile_12345.jpg
+        posts:
+          type: array
+          description: User's posts
+          items:
+            type: object
+            properties:
+              uuid:
+                type: string
+                format: uuid
+                description: Post UUID
+                example: 123e4567-e89b-12d3-a456-426614174002
+              title:
+                type: string
+                description: Post title
+                example: Beautiful sunset
+              body:
+                type: string
+                description: Post content
+                example: Amazing view from the top of the mountain
+              latitude:
+                type: number
+                description: Post location latitude
+                example: 40.7589
+              longitude:
+                type: number
+                description: Post location longitude
+                example: -73.9851
+              createdAt:
+                type: string
+                format: date-time
+                description: Post creation timestamp
+                example: 2023-01-01T12:00:00Z
+        comments:
+          type: array
+          description: User's comments
+          items:
+            type: object
+            properties:
+              uuid:
+                type: string
+                format: uuid
+                description: Comment UUID
+                example: 123e4567-e89b-12d3-a456-426614174003
+              body:
+                type: string
+                description: Comment content
+                example: Great photo!
+              createdAt:
+                type: string
+                format: date-time
+                description: Comment creation timestamp
+                example: 2023-01-01T12:15:00Z
+        deletedAt:
+          type: string
+          nullable: true
+          format: date-time
+          description: Profile soft deletion timestamp
+          example: null
+        createdAt:
+          type: string
+          format: date-time
+          description: Profile creation timestamp
+          example: 2023-01-01T00:00:00Z
+        updatedAt:
+          type: string
+          format: date-time
+          description: Profile last update timestamp
+          example: 2023-01-01T00:00:00Z

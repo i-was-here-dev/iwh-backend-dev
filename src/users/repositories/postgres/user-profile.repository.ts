@@ -8,11 +8,13 @@ export class UserProfileRepository implements UserProfileRepositoryInterface {
   async findByUserId(userId: number): Promise<UserProfile | null> {
     return await this.repository.findOne({
       where: { user: { id: userId } },
+      relations: ['user', 'user.posts', 'user.comments'],
     });
   }
   async findByUuid(uuid: string): Promise<UserProfile | null> {
     return await this.repository.findOne({
       where: { uuid: uuid },
+      relations: ['user', 'user.posts', 'user.comments'],
     });
   }
   async save(profile: UserProfile): Promise<UserProfile> {

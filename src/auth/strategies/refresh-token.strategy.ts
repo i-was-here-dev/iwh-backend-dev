@@ -22,7 +22,7 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'refresh-jw
     if (blacklistedToken) throw new UnauthorizedException();
 
     return {
-      userId: payload.sub,
+      id: payload.sub,
       email: payload.email,
       username: payload.username,
     };

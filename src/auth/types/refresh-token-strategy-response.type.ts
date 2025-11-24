@@ -1,5 +1,5 @@
 export type RefreshTokenStrategyResponse = {
-  userId: number;
+  id: number;
   username: string;
   email: string;
 };
