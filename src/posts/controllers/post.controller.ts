@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, HttpStatus, Inject, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, HttpCode, HttpStatus, Inject, Param, Post } from '@nestjs/common';
 import { SavePostUseCase } from '../services/usecases/save-post.usecase';
 import { SavePostRequestDto } from '../dto/save-post-request.dto';
 import { PostsDiTokens } from '../di/posts-tokens.di';
@@ -7,6 +7,8 @@ import { JwtAuthGuardResponse } from 'src/auth/interfaces/jwt-auth-guard-respons
 import { SavePostResponseDto } from '../dto/save-post-response.dto';
 import { SaveApprovalRequestDto } from '../dto/save-approval-request.dto';
 import { SaveApprovalUseCase } from '../services/usecases/save-approval.usecase';
+import { DeleteApprovalUseCase } from '../services/usecases/delete-approval.usecase';
+import { DeleteApprovalRequestDto } from '../dto/delete-approval-request.dto';
 
 @Controller('posts')
 export class PostController {
@@ -15,6 +17,8 @@ export class PostController {
     private readonly savePostService: SavePostUseCase,
     @Inject(PostsDiTokens.SaveApprovalService)
     private readonly saveApprovalService: SaveApprovalUseCase,
+    @Inject(PostsDiTokens.DeleteApprovalService)
+    private readonly deleteApprovalService: DeleteApprovalUseCase,
   ) {}
 
   @Post()
@@ -54,6 +58,21 @@ export class PostController {
       userId: user.id,
       userLatitude: payload.latitude,
       userLongitude: payload.longitude,
+    });
+  }
+
+  @HttpCode(204)
+  @Delete(':uuid/approvals')
+  async deleteApproval(
+    @UserData() user: JwtAuthGuardResponse,
+    @Param('uuid') postUuid: string,
+    @Body() payload: DeleteApprovalRequestDto,
+  ): Promise<void> {
+    await this.deleteApprovalService.execute({
+      postUuid: postUuid,
+      latitude: payload.latitude,
+      longitude: payload.longitude,
+      userId: user.id,
     });
   }
 }
