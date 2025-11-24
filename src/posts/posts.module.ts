@@ -19,6 +19,7 @@ import { Comment } from './entities/comment.entity';
 import { CommentRepository } from './repositories/postgres/comment.repository';
 import { CommentRepositoryInterface } from './repositories/comment-repository.interface';
 import { DeleteApprovalService } from './services/delete-approval.service';
+import { PostController } from './controllers/post.controller';
 
 const repositoryProviders: Provider[] = [
   {
@@ -99,6 +100,7 @@ const serviceProviders: Provider[] = [
 ];
 
 @Module({
+  controllers: [PostController],
   providers: [...repositoryProviders, ...serviceProviders],
 })
 export class PostsModule {}
