@@ -123,6 +123,45 @@ paths:
           $ref: '#/components/responses/JwtUnauthorizedError'
         '422':
           $ref: '#/components/responses/UnprocessableEntityError'
+  /posts/{uuid}/approvals:
+    post:
+      operationId: saveApproval
+      summary: Create approval for a post
+      description: Create an approval for a specific post by providing the user's current location to verify they are at the post location
+      security:
+        - bearerAuth: []
+      tags:
+        - Posts
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          description: UUID of the post to approve
+          schema:
+            type: string
+            format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174002
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaveApprovalRequest'
+      responses:
+        '204':
+          description: Approval successfully created
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/JwtUnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '409':
+          $ref: '#/components/responses/ConflictError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityError'
   /profile/me:
     get:
       operationId: findProfileByUserId
@@ -215,6 +254,16 @@ components:
             message: Parameters conflict with the current state of the server
             error: Conflict
             statusCode: 409
+    ForbiddenError:
+      description: User is not authorized to perform this action or does not meet location requirements
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: 'User is not near post'
+            error: 'Forbidden'
+            statusCode: 403
     NotFoundError:
       description: The requested resource was not found
       content:
@@ -422,7 +471,27 @@ components:
           nullable: true
           format: date-time
           description: Post soft deletion timestamp
-          example: null  
+          example: null
+    SaveApprovalRequest:
+      type: object
+      required:
+        - latitude
+        - longitude
+      properties:
+        latitude:
+          type: number
+          format: float
+          minimum: -90
+          maximum: 90
+          description: User's current latitude to verify location
+          example: 40.7589
+        longitude:
+          type: number
+          format: float
+          minimum: -180
+          maximum: 180
+          description: User's current longitude to verify location
+          example: -73.9851  
     User:
       type: object
       properties:
