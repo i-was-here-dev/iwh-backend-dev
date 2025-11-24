@@ -3,6 +3,8 @@ import { UseCase } from 'src/common/usecase.common';
 export type DeleteApprovalPort = {
   postUuid: string;
   userId: number;
+  longitude: number;
+  latitude: number;
 };
 
 export interface DeleteApprovalUseCase extends UseCase<DeleteApprovalPort, void> {}
