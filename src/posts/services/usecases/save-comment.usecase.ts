@@ -3,8 +3,10 @@ import { UseCase } from 'src/common/usecase.common';
 
 export type SaveCommentPort = {
   userId: number;
-  postId: number;
+  postUuid: string;
   body: string;
+  userLatitude: number;
+  userLongitude: number;
 };
 
 export interface SaveCommentUsecase extends UseCase<SaveCommentPort, Comment> {}

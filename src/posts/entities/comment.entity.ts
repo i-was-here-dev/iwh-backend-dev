@@ -15,7 +15,7 @@ import { User } from 'src/users/entities/user.entity';
 
 type CommentData = {
   userId: number;
-  postId: number;
+  postUuid: string;
   body: string;
 };
 
@@ -34,7 +34,7 @@ export class Comment {
 
   @Column()
   @Index()
-  postId: number;
+  postUuid: string;
 
   @ManyToOne(() => Post, (post) => post.comments)
   @JoinColumn()
@@ -55,12 +55,4 @@ export class Comment {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
-
-  static create(commentData: CommentData): Comment {
-    const comment = new Comment();
-    comment.userId = commentData.userId;
-    comment.postId = commentData.postId;
-    comment.body = commentData.body;
-    return comment;
-  }
 }
