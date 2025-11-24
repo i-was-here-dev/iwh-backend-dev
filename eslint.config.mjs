@@ -52,5 +52,14 @@ export default tseslint.config(
     rules: {
       '@typescript-eslint/no-unsafe-member-access': 'off',
     }
+  },
+  {
+    files: [
+      '**/posts/guards/location-integrity.guard.ts'
+    ],
+    rules: {
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      'no-constant-binary-expression': 'off'
+    }
   }
 );

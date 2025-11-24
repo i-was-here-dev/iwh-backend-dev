@@ -12,6 +12,13 @@ import { ApprovalRepositoryInterface } from './repositories/approval-repository.
 import { SaveApprovalService } from './services/save-approval.service';
 import { FindPostsByUserIdService } from './services/find-posts-by-user-id.service';
 import { FindPostByUuidService } from './services/find-post-by-uuid.service';
+import { FindPostsInUserVicinityService } from './services/find-posts-in-user-vicinity.service';
+import { FindPostsInBoundingBoxService } from './services/find-posts-in-bounding-box.service';
+import { UpdateCommentService } from './services/update-comment.service';
+import { Comment } from './entities/comment.entity';
+import { CommentRepository } from './repositories/postgres/comment.repository';
+import { CommentRepositoryInterface } from './repositories/comment-repository.interface';
+import { DeleteApprovalService } from './services/delete-approval.service';
 
 const repositoryProviders: Provider[] = [
   {
@@ -34,6 +41,16 @@ const repositoryProviders: Provider[] = [
     useFactory: (repository: Repository<Approval>) => new ApprovalRepository(repository),
     inject: [PostsDiTokens.PostgresApprovalRepositoryInterface],
   },
+  {
+    provide: PostsDiTokens.PostgresCommentRepositoryInterface,
+    useFactory: (dataSource: DataSource) => dataSource.getRepository(Comment),
+    inject: [DatabaseDiTokens.PostgresDataSource],
+  },
+  {
+    provide: PostsDiTokens.CommentRepositoryInterface,
+    useFactory: (repository: Repository<Comment>) => new CommentRepository(repository),
+    inject: [PostsDiTokens.PostgresCommentRepositoryInterface],
+  },
 ];
 
 const serviceProviders: Provider[] = [
@@ -54,9 +71,30 @@ const serviceProviders: Provider[] = [
     inject: [PostsDiTokens.PostRepositoryInterface],
   },
   {
-    provide: PostsDiTokens.FindPostByUuid,
+    provide: PostsDiTokens.FindPostByUuidService,
     useFactory: (postRepository: PostRepositoryInterface) => new FindPostByUuidService(postRepository),
     inject: [PostsDiTokens.PostRepositoryInterface],
+  },
+  {
+    provide: PostsDiTokens.FindPostsInUserVicinityService,
+    useFactory: (postRepository: PostRepositoryInterface) => new FindPostsInUserVicinityService(postRepository),
+    inject: [PostsDiTokens.PostRepositoryInterface],
+  },
+  {
+    provide: PostsDiTokens.FindPostsInBoundingBoxService,
+    useFactory: (postRepository: PostRepositoryInterface) => new FindPostsInBoundingBoxService(postRepository),
+    inject: [PostsDiTokens.PostRepositoryInterface],
+  },
+  {
+    provide: PostsDiTokens.UpdateCommentService,
+    useFactory: (commentRepository: CommentRepositoryInterface) => new UpdateCommentService(commentRepository),
+    inject: [PostsDiTokens.CommentRepositoryInterface],
+  },
+  {
+    provide: PostsDiTokens.DeleteApprovalService,
+    useFactory: (approvalRepository: ApprovalRepositoryInterface, postRepository: PostRepositoryInterface) =>
+      new DeleteApprovalService(approvalRepository, postRepository),
+    inject: [PostsDiTokens.ApprovalRepositoryInterface, PostsDiTokens.PostRepositoryInterface],
   },
 ];
 
