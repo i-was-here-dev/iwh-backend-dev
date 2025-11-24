@@ -13,6 +13,7 @@ import { SaveApprovalService } from './services/save-approval.service';
 import { FindPostsByUserIdService } from './services/find-posts-by-user-id.service';
 import { FindPostByUuidService } from './services/find-post-by-uuid.service';
 import { FindPostsInUserVicinityService } from './services/find-posts-in-user-vicinity.service';
+import { FindPostsInBoundingBoxService } from './services/find-posts-in-bounding-box.service';
 
 const repositoryProviders: Provider[] = [
   {
@@ -62,6 +63,11 @@ const serviceProviders: Provider[] = [
   {
     provide: PostsDiTokens.FindPostsInUserVicinityService,
     useFactory: (postRepository: PostRepositoryInterface) => new FindPostsInUserVicinityService(postRepository),
+    inject: [PostsDiTokens.PostRepositoryInterface],
+  },
+  {
+    provide: PostsDiTokens.FindPostsInBoundingBoxService,
+    useFactory: (postRepository: PostRepositoryInterface) => new FindPostsInBoundingBoxService(postRepository),
     inject: [PostsDiTokens.PostRepositoryInterface],
   },
 ];
