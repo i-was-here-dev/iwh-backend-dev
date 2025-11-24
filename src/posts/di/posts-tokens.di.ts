@@ -3,6 +3,8 @@ export class PostsDiTokens {
   public static readonly PostgresPostRepositoryInterface: string = 'PostgresUserRepositoryInterface';
   public static readonly ApprovalRepositoryInterface: string = 'ApprovalRepositoryInterface';
   public static readonly PostgresApprovalRepositoryInterface: string = 'PostgresApprovalRepositoryInterface';
+  public static readonly CommentRepositoryInterface: string = 'CommentRepositoryInterface';
+  public static readonly PostgresCommentRepositoryInterface: string = 'PostgresCommentRepositoryInterface';
 
   public static readonly SavePostService: string = 'SavePostService';
   public static readonly SaveApprovalService: string = 'SaveApprovalService';
@@ -10,4 +12,5 @@ export class PostsDiTokens {
   public static readonly FindPostByUuidService: string = 'FindPostByUuidService';
   public static readonly FindPostsInUserVicinityService: string = 'FindPostsInUserVicinityService';
   public static readonly FindPostsInBoundingBoxService: string = 'FindPostsInBoundingBoxService';
+  public static readonly UpdateCommentService: string = 'UpdateCommentService';
 }

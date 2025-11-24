@@ -14,6 +14,10 @@ import { FindPostsByUserIdService } from './services/find-posts-by-user-id.servi
 import { FindPostByUuidService } from './services/find-post-by-uuid.service';
 import { FindPostsInUserVicinityService } from './services/find-posts-in-user-vicinity.service';
 import { FindPostsInBoundingBoxService } from './services/find-posts-in-bounding-box.service';
+import { UpdateCommentService } from './services/update-comment.service';
+import { Comment } from './entities/comment.entity';
+import { CommentRepository } from './repositories/postgres/comment.repository';
+import { CommentRepositoryInterface } from './repositories/comment-repository.interface';
 
 const repositoryProviders: Provider[] = [
   {
@@ -35,6 +39,16 @@ const repositoryProviders: Provider[] = [
     provide: PostsDiTokens.ApprovalRepositoryInterface,
     useFactory: (repository: Repository<Approval>) => new ApprovalRepository(repository),
     inject: [PostsDiTokens.PostgresApprovalRepositoryInterface],
+  },
+  {
+    provide: PostsDiTokens.PostgresCommentRepositoryInterface,
+    useFactory: (dataSource: DataSource) => dataSource.getRepository(Comment),
+    inject: [DatabaseDiTokens.PostgresDataSource],
+  },
+  {
+    provide: PostsDiTokens.CommentRepositoryInterface,
+    useFactory: (repository: Repository<Comment>) => new CommentRepository(repository),
+    inject: [PostsDiTokens.PostgresCommentRepositoryInterface],
   },
 ];
 
@@ -69,6 +83,11 @@ const serviceProviders: Provider[] = [
     provide: PostsDiTokens.FindPostsInBoundingBoxService,
     useFactory: (postRepository: PostRepositoryInterface) => new FindPostsInBoundingBoxService(postRepository),
     inject: [PostsDiTokens.PostRepositoryInterface],
+  },
+  {
+    provide: PostsDiTokens.UpdateCommentService,
+    useFactory: (commentRepository: CommentRepositoryInterface) => new UpdateCommentService(commentRepository),
+    inject: [PostsDiTokens.CommentRepositoryInterface],
   },
 ];
 
