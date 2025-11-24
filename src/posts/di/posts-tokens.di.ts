@@ -13,4 +13,5 @@ export class PostsDiTokens {
   public static readonly FindPostsInUserVicinityService: string = 'FindPostsInUserVicinityService';
   public static readonly FindPostsInBoundingBoxService: string = 'FindPostsInBoundingBoxService';
   public static readonly UpdateCommentService: string = 'UpdateCommentService';
+  public static readonly DeleteApprovalService: string = 'DeletApprovalService';
 }

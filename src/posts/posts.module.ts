@@ -18,6 +18,7 @@ import { UpdateCommentService } from './services/update-comment.service';
 import { Comment } from './entities/comment.entity';
 import { CommentRepository } from './repositories/postgres/comment.repository';
 import { CommentRepositoryInterface } from './repositories/comment-repository.interface';
+import { DeleteApprovalService } from './services/delete-approval.service';
 
 const repositoryProviders: Provider[] = [
   {
@@ -88,6 +89,12 @@ const serviceProviders: Provider[] = [
     provide: PostsDiTokens.UpdateCommentService,
     useFactory: (commentRepository: CommentRepositoryInterface) => new UpdateCommentService(commentRepository),
     inject: [PostsDiTokens.CommentRepositoryInterface],
+  },
+  {
+    provide: PostsDiTokens.DeleteApprovalService,
+    useFactory: (approvalRepository: ApprovalRepositoryInterface, postRepository: PostRepositoryInterface) =>
+      new DeleteApprovalService(approvalRepository, postRepository),
+    inject: [PostsDiTokens.ApprovalRepositoryInterface, PostsDiTokens.PostRepositoryInterface],
   },
 ];
 
