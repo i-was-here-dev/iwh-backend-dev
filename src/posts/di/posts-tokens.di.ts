@@ -9,4 +9,5 @@ export class PostsDiTokens {
   public static readonly FindPostsByUserIdService: string = 'FindPostsByUserIdService';
   public static readonly FindPostByUuidService: string = 'FindPostByUuidService';
   public static readonly FindPostsInUserVicinityService: string = 'FindPostsInUserVicinityService';
+  public static readonly FindPostsInBoundingBoxService: string = 'FindPostsInBoundingBoxService';
 }
