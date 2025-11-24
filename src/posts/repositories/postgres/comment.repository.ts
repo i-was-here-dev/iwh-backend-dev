@@ -22,6 +22,14 @@ export class CommentRepository implements CommentRepositoryInterface {
     });
   }
 
+  async findByUuid(uuid: string): Promise<Comment | null> {
+    return await this.repository.findOne({
+      where: {
+        uuid: uuid,
+      },
+    });
+  }
+
   async save(comment: Comment): Promise<Comment> {
     return await this.repository.save(comment);
   }
