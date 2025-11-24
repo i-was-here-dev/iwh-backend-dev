@@ -32,10 +32,6 @@ export class Comment {
   @Index()
   userId: number;
 
-  @Column()
-  @Index()
-  postUuid: string;
-
   @ManyToOne(() => Post, (post) => post.comments)
   @JoinColumn()
   post: Post;

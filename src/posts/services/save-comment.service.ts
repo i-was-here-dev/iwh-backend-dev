@@ -1,7 +1,7 @@
 import { Comment } from '../entities/comment.entity';
 import { SaveCommentPort, SaveCommentUsecase } from './usecases/save-comment.usecase';
 import { CommentRepositoryInterface } from '../repositories/comment-repository.interface';
-import { NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { PostRepositoryInterface } from '../repositories/post-repository.interface';
 import { GeographyUtils } from 'src/common/utilities/geography.utility';
 
@@ -22,12 +22,12 @@ export class SaveCommentService implements SaveCommentUsecase {
     const distance = GeographyUtils.calculateDistance(userLatitude, userLongitude, post.latitude, post.longitude);
 
     if (distance > 15) {
-      throw new Error('You are too far away from the post to comment');
+      throw new ForbiddenException('You are too far away from the post to comment');
     }
 
     const comment = new Comment();
     comment.userId = userId;
-    comment.postUuid = postUuid;
+    comment.post = post;
     comment.body = body;
 
     return await this.commentRepository.save(comment);
