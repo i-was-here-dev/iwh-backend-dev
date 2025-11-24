@@ -12,6 +12,7 @@ import { ApprovalRepositoryInterface } from './repositories/approval-repository.
 import { SaveApprovalService } from './services/save-approval.service';
 import { FindPostsByUserIdService } from './services/find-posts-by-user-id.service';
 import { FindPostByUuidService } from './services/find-post-by-uuid.service';
+import { FindPostsInUserVicinityService } from './services/find-posts-in-user-vicinity.service';
 
 const repositoryProviders: Provider[] = [
   {
@@ -54,8 +55,13 @@ const serviceProviders: Provider[] = [
     inject: [PostsDiTokens.PostRepositoryInterface],
   },
   {
-    provide: PostsDiTokens.FindPostByUuid,
+    provide: PostsDiTokens.FindPostByUuidService,
     useFactory: (postRepository: PostRepositoryInterface) => new FindPostByUuidService(postRepository),
+    inject: [PostsDiTokens.PostRepositoryInterface],
+  },
+  {
+    provide: PostsDiTokens.FindPostsInUserVicinityService,
+    useFactory: (postRepository: PostRepositoryInterface) => new FindPostsInUserVicinityService(postRepository),
     inject: [PostsDiTokens.PostRepositoryInterface],
   },
 ];
