@@ -8,15 +8,14 @@ export class SavePostService implements SavePostUseCase {
   async execute(payload: SavePostPort): Promise<Post> {
     const { userId, body, title, longitude, latitude, imageName, videoName } = payload;
 
-    const post = Post.create({
-      title: title,
-      userId: userId,
-      body: body,
-      longitude: longitude,
-      latitude: latitude,
-      imageName: imageName,
-      videoName: videoName,
-    });
+    const post = new Post();
+    post.title = title;
+    post.body = body;
+    post.latitude = latitude;
+    post.longitude = longitude;
+    post.imageName = imageName || null;
+    post.videoName = videoName || null;
+    post.userId = userId;
 
     return await this.postRepository.save(post);
   }
