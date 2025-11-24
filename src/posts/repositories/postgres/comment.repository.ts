@@ -27,6 +27,7 @@ export class CommentRepository implements CommentRepositoryInterface {
       where: {
         uuid: uuid,
       },
+      relations: ['user', 'post'],
     });
   }
 
