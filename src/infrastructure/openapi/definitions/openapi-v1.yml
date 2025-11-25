@@ -478,6 +478,35 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         '422':
           $ref: '#/components/responses/UnprocessableEntityError'
+  /profile/{uuid}:
+    get:
+      operationId: findProfileByUuid
+      summary: Get user profile by UUID
+      description: Retrieve a user's profile information including posts, comments, and profile details by their profile UUID
+      security:
+        - bearerAuth: []
+      tags:
+        - Profile
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          description: UUID of the profile to retrieve
+          schema:
+            type: string
+            format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174001
+      responses:
+        '200':
+          description: User profile successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+        '401':
+          $ref: '#/components/responses/JwtUnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
 components:
   securitySchemes: 
     bearerAuth:
