@@ -1,34 +1,28 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Post } from '../entities/post.entity';
 import { PostRepositoryInterface } from '../repositories/post-repository.interface';
-import { FindPostByUuidPort, FindPostByUuidUseCase } from './usecases/find-post-by-uuid.service';
-import { PointLocation } from '../types/location.type';
+import { FindPostByUuidPort, FindPostByUuidUseCase, FindPostByUuidResponse } from './usecases/find-post-by-uuid.usecase';
+import { GeographyUtils } from 'src/common/utilities/geography.utility';
 
 export class FindPostByUuidService implements FindPostByUuidUseCase {
   constructor(private readonly postRepository: PostRepositoryInterface) {}
 
-  async execute(payload: FindPostByUuidPort): Promise<Post> {
+  async execute(payload: FindPostByUuidPort): Promise<FindPostByUuidResponse> {
     const { longitude, latitude, uuid } = payload;
 
-    const post: Post = await this.postRepository.findByUuid(uuid);
-    if (!post) throw new NotFoundException('Post not found');
+    const result = await this.postRepository.findByUuidWithDetails(uuid);
+    if (!result) throw new NotFoundException('Post not found');
 
-    const distanceInMeters = this.calculateDistanceBetweenPoints(
-      { latitude: latitude, longitude: longitude },
-      { latitude: post.latitude, longitude: post.longitude },
-    );
+    const { post, approvalCount } = result;
 
-    if (distanceInMeters > 15) {
+    if (!this.isUserNearPost(longitude, latitude, post.longitude, post.latitude)) {
       throw new ForbiddenException('User must be within 15 meters of the post');
     }
 
-    return post;
+    return { post, approvalCount };
   }
 
-  private calculateDistanceBetweenPoints(locationA: PointLocation, locationB: PointLocation) {
-    const latitudeDiff = (locationB.latitude - locationA.latitude) * 111000; // 1 degree = 111km
-    const longitudeDiff = (locationB.longitude - locationA.longitude) * 111000;
-
-    return Math.sqrt(latitudeDiff * longitudeDiff + longitudeDiff * latitudeDiff);
+  private isUserNearPost(userLatitude: number, userLongitude: number, postLatitude: number, postLongitude: number): boolean {
+    return GeographyUtils.calculateDistance(userLatitude, userLongitude, postLatitude, postLongitude) <= 15;
   }
 }

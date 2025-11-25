@@ -7,4 +7,9 @@ export type FindPostByUuidPort = {
   uuid: string;
 };
 
-export interface FindPostByUuidUseCase extends UseCase<FindPostByUuidPort, Post> {}
+export type FindPostByUuidResponse = {
+  post: Post;
+  approvalCount: number;
+};
+
+export interface FindPostByUuidUseCase extends UseCase<FindPostByUuidPort, FindPostByUuidResponse> {}
