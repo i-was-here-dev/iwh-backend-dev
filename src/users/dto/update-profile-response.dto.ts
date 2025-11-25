@@ -1,6 +1,8 @@
 export class UpdateProfileResponseDto {
-  uuid: string;
-  points: number;
-  nickname: string;
-  profilePictureName: string;
+  profile: {
+    uuid: string;
+    points: number;
+    nickname: string;
+    profilePictureName: string;
+  };
 }

@@ -48,16 +48,18 @@ export class PostController {
     });
 
     return {
-      uuid: post.uuid,
-      longitude: post.longitude,
-      latitude: post.latitude,
-      title: post.title,
-      body: post.body,
-      videoName: post.videoName,
-      imageName: post.imageName,
-      createdAt: post.createdAt,
-      updatedAt: post.updatedAt,
-      deletedAt: post.deletedAt,
+      post: {
+        uuid: post.uuid,
+        longitude: post.longitude,
+        latitude: post.latitude,
+        title: post.title,
+        body: post.body,
+        videoName: post.videoName,
+        imageName: post.imageName,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+        deletedAt: post.deletedAt,
+      },
     };
   }
 

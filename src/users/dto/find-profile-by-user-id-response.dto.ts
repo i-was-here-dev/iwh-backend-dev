@@ -1,8 +1,10 @@
 export class FindProfileByUserIdResponseDto {
-  uuid: string;
-  nickname: string;
-  points: number;
-  profilePictureName: string;
+  profile: {
+    uuid: string;
+    nickname: string;
+    points: number;
+    profilePictureName: string;
+  };
   posts: {
     uuid: string;
     title: string;

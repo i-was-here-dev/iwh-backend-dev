@@ -37,11 +37,13 @@ export class CommentController {
     });
 
     return {
-      uuid: comment.uuid,
-      body: comment.body,
-      createdAt: comment.createdAt,
-      updatedAt: comment.updatedAt,
-      deletedAt: comment.deletedAt,
+      comment: {
+        uuid: comment.uuid,
+        body: comment.body,
+        createdAt: comment.createdAt,
+        updatedAt: comment.updatedAt,
+        deletedAt: comment.deletedAt,
+      },
     };
   }
 
@@ -60,11 +62,13 @@ export class CommentController {
     });
 
     return {
-      uuid: comment.uuid,
-      body: comment.body,
-      createdAt: comment.createdAt,
-      updatedAt: comment.updatedAt,
-      deletedAt: comment.deletedAt,
+      comment: {
+        uuid: comment.uuid,
+        body: comment.body,
+        createdAt: comment.createdAt,
+        updatedAt: comment.updatedAt,
+        deletedAt: comment.deletedAt,
+      },
     };
   }
 

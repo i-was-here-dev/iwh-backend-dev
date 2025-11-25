@@ -28,10 +28,12 @@ export class ProfileController {
     const profile: UserProfile = await this.findProfileByUserIdService.execute(payload);
 
     return {
-      uuid: profile.uuid,
-      nickname: profile.nickname,
-      points: profile.points,
-      profilePictureName: profile.profilePictureName,
+      profile: {
+        uuid: profile.uuid,
+        nickname: profile.nickname,
+        points: profile.points,
+        profilePictureName: profile.profilePictureName,
+      },
       posts:
         profile.user?.posts?.map((post) => ({
           uuid: post.uuid,
@@ -60,10 +62,12 @@ export class ProfileController {
     });
 
     return {
-      uuid: profile.uuid,
-      nickname: profile.nickname,
-      points: profile.points,
-      profilePictureName: profile.profilePictureName,
+      profile: {
+        uuid: profile.uuid,
+        nickname: profile.nickname,
+        points: profile.points,
+        profilePictureName: profile.profilePictureName,
+      },
       posts:
         profile.user?.posts?.map((post) => ({
           uuid: post.uuid,
@@ -94,10 +98,12 @@ export class ProfileController {
     });
 
     return {
-      uuid: profile.uuid,
-      points: profile.points,
-      nickname: profile.nickname,
-      profilePictureName: profile.profilePictureName,
+      profile: {
+        uuid: profile.uuid,
+        points: profile.points,
+        nickname: profile.nickname,
+        profilePictureName: profile.profilePictureName,
+      },
     };
   }
 }
