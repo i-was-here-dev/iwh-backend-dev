@@ -25,8 +25,8 @@ export class UserProfile {
   @Index()
   userId: number;
 
-  @OneToOne(() => User, (user) => user.profile)
-  @JoinColumn()
+  @OneToOne(() => User, (user) => user.profile, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'userId' })
   @Index('idx_user_profile_user_id')
   user: User;
 

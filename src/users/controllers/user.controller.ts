@@ -1,14 +1,19 @@
-import { Controller, Inject, Get, Param } from '@nestjs/common';
+import { Controller, Inject, Get, Param, Delete, HttpCode } from '@nestjs/common';
 import { User } from '../entities/user.entity';
 import { UsersDiTokens } from '../di/users-tokens.di';
 import { FindUserByUuidPort, FindUserByUuidUseCase } from '../services/usecases/find-user-by-uuid.usecase';
 import { FindUserByUuidResponseDto } from '../dto/find-user-by-uuid-response.dto';
+import { JwtAuthGuardResponse } from 'src/auth/interfaces/jwt-auth-guard-response.interface';
+import { UserData } from 'src/auth/decorators/user-data.decorator';
+import { SoftDeleteUserUsecase } from '../services/usecases/soft-delete-user.usecase';
 
 @Controller('users')
 export class UserController {
   constructor(
     @Inject(UsersDiTokens.FindUserByUuidService)
     private readonly findUserByUuidService: FindUserByUuidUseCase,
+    @Inject(UsersDiTokens.SoftDeleteUserService)
+    private readonly softDeleteUserService: SoftDeleteUserUsecase,
   ) {}
 
   @Get(':uuid')
@@ -24,5 +29,13 @@ export class UserController {
       updatedAt: user.updatedAt,
       deletedAt: user.deletedAt,
     };
+  }
+
+  @HttpCode(204)
+  @Delete('')
+  async softDeleteUser(@UserData() user: JwtAuthGuardResponse): Promise<void> {
+    await this.softDeleteUserService.execute({
+      id: user.id,
+    });
   }
 }

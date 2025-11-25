@@ -507,6 +507,51 @@ paths:
           $ref: '#/components/responses/JwtUnauthorizedError'
         '404':
           $ref: '#/components/responses/NotFoundError'
+  /users:
+    delete:
+      operationId: softDeleteUser
+      summary: Soft delete current user account
+      description: Soft delete the authenticated user's account by marking it as deleted rather than permanently removing it
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      responses:
+        '204':
+          description: User account successfully soft deleted
+        '401':
+          $ref: '#/components/responses/JwtUnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /users/{uuid}:
+    get:
+      operationId: findUserByUuid
+      summary: Get user by UUID
+      description: Retrieve a user's basic information by their UUID
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          description: UUID of the user to retrieve
+          schema:
+            type: string
+            format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174001
+      responses:
+        '200':
+          description: User successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindUserByUuidResponse'
+        '401':
+          $ref: '#/components/responses/JwtUnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
 components:
   securitySchemes: 
     bearerAuth:
@@ -1484,3 +1529,36 @@ components:
                   type: integer
                   description: User's points
                   example: 150
+    FindUserByUuidResponse:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          description: User UUID
+          example: 123e4567-e89b-12d3-a456-426614174001
+        username:
+          type: string
+          description: Username
+          example: johndoe
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: john.doe@example.com
+        createdAt:
+          type: string
+          format: date-time
+          description: User account creation timestamp
+          example: 2025-01-01T00:00:00Z
+        updatedAt:
+          type: string
+          format: date-time
+          description: User account last update timestamp
+          example: 2025-11-26T10:00:00Z
+        deletedAt:
+          type: string
+          nullable: true
+          format: date-time
+          description: User account soft deletion timestamp
+          example: null
