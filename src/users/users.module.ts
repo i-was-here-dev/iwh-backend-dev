@@ -17,6 +17,7 @@ import { FindProfileByUserIdService } from './services/find-profile-by-user.id.s
 import { ProfileController } from './controllers/user-profile.controller';
 import { UpdateProfileService } from './services/update-user-profile.service';
 import { FindProfileByUuidService } from './services/find-profile-by-uuid.service';
+import { SoftDeleteUserService } from './services/soft-delete-user.service';
 
 const repositoryProvider: Array<Provider> = [
   {
@@ -77,6 +78,11 @@ const serviceProvider: Array<Provider> = [
     provide: UsersDiTokens.FindProfileByUuidService,
     useFactory: (userProfileRepository: UserProfileRepositoryInterface) => new FindProfileByUuidService(userProfileRepository),
     inject: [UsersDiTokens.UserProfileRepositoryInterface],
+  },
+  {
+    provide: UsersDiTokens.SoftDeleteUserService,
+    useFactory: (userRepository: UserRepositoryInterface) => new SoftDeleteUserService(userRepository),
+    inject: [UsersDiTokens.UserRepositoryInterface],
   },
 ];
 
