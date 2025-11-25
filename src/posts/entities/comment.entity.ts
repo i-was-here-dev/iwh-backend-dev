@@ -4,6 +4,7 @@ import {
   DeleteDateColumn,
   Entity,
   Generated,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -20,6 +21,10 @@ export class Comment {
   @Column()
   @Generated('uuid')
   uuid: string;
+
+  @Column()
+  @Index()
+  userId: number;
 
   @ManyToOne(() => Post, (post) => post.comments)
   @JoinColumn()
