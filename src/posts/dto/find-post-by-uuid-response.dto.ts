@@ -14,7 +14,6 @@ export class FindPostByUuidResponseDto {
 
   creator: {
     uuid: string;
-    username: string;
     profile: {
       uuid: string;
       nickname: string;
@@ -31,7 +30,6 @@ export class FindPostByUuidResponseDto {
     deletedAt: Date;
     user: {
       uuid: string;
-      username: string;
       profile: {
         uuid: string;
         nickname: string;

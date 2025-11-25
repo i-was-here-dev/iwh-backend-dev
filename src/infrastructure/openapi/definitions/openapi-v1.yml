@@ -123,6 +123,36 @@ paths:
           $ref: '#/components/responses/JwtUnauthorizedError'
         '422':
           $ref: '#/components/responses/UnprocessableEntityError'
+  /posts/bounding-box:
+    get:
+      operationId: findPostsInBoundingBox
+      summary: Find posts within a bounding box
+      description: Retrieve posts within a specified rectangular area defined by center coordinates and dimensions
+      security:
+        - bearerAuth: []
+      tags:
+        - Posts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FindPostsInBoundingBoxRequest'
+      responses:
+        '200':
+          description: Posts within bounding box successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FindPostsInBoundingBoxResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/JwtUnauthorizedError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityError'
   /posts/vicinity:
     get:
       operationId: findPostsInVicinity
@@ -1248,3 +1278,124 @@ components:
           type: integer
           description: Number of comments on this post
           example: 8
+    FindPostsInBoundingBoxRequest:
+      type: object
+      required:
+        - latitude
+        - longitude
+        - boxWidth
+        - boxLength
+      properties:
+        latitude:
+          type: number
+          format: double
+          minimum: -90
+          maximum: 90
+          description: Center latitude of the bounding box
+          example: 40.7128
+        longitude:
+          type: number
+          format: double
+          minimum: -180
+          maximum: 180
+          description: Center longitude of the bounding box
+          example: -74.0060
+        boxWidth:
+          type: number
+          format: double
+          minimum: 0.001
+          maximum: 0.1
+          description: Width of the bounding box in latitude degrees (~100m to ~11km)
+          example: 0.01
+        boxLength:
+          type: number
+          format: double
+          minimum: 0.001
+          maximum: 0.1
+          description: Length of the bounding box in longitude degrees (~100m to ~11km)
+          example: 0.01
+    FindPostsInBoundingBoxResponse:
+      type: object
+      properties:
+        post:
+          type: object
+          properties:
+            uuid:
+              type: string
+              format: uuid
+              description: Post UUID
+              example: 123e4567-e89b-12d3-a456-426614174000
+            title:
+              type: string
+              description: Post title
+              example: Beautiful sunset
+            body:
+              type: string
+              description: Post content
+              example: Amazing view from the park
+            latitude:
+              type: number
+              format: float
+              description: Post location latitude
+              example: 40.7128
+            longitude:
+              type: number
+              format: float
+              description: Post location longitude
+              example: -74.0060
+            imageName:
+              type: string
+              nullable: true
+              description: Image filename
+              example: sunset.jpg
+            videoName:
+              type: string
+              nullable: true
+              description: Video filename
+              example: sunset_video.mp4
+            createdAt:
+              type: string
+              format: date-time
+              description: Post creation timestamp
+              example: 2025-11-25T10:30:00Z
+            updatedAt:
+              type: string
+              format: date-time
+              description: Post last update timestamp
+              example: 2025-11-25T10:30:00Z
+            deletedAt:
+              type: string
+              nullable: true
+              format: date-time
+              description: Post soft deletion timestamp
+              example: null
+        creator:
+          type: object
+          description: Post creator information
+          properties:
+            uuid:
+              type: string
+              format: uuid
+              description: User UUID
+              example: user-uuid-123
+            profile:
+              type: object
+              properties:
+                uuid:
+                  type: string
+                  format: uuid
+                  description: User profile UUID
+                  example: profile-uuid-123
+                nickname:
+                  type: string
+                  description: User's display nickname
+                  example: John Doe
+                profilePictureName:
+                  type: string
+                  nullable: true
+                  description: Profile picture filename
+                  example: john.jpg
+                points:
+                  type: integer
+                  description: User's points
+                  example: 150

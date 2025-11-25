@@ -79,7 +79,6 @@ export class PostRepository implements PostRepositoryInterface {
         minLongitude: minLongitude,
         maxLongitude: maxLongitude,
       })
-      .orderBy('RANDOM()')
       .take(query.limit)
       .getMany();
   }

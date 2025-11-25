@@ -14,6 +14,9 @@ import { BaseLocationDto } from '../dto/abstracts/base-location.abstract';
 import { FindPostByUuidResponseDto } from '../dto/find-post-by-uuid-response.dto';
 import { FindPostsInVicinityResponseDto } from '../dto/find-posts-in-vicinity-response.dto';
 import { FindPostsInUserVicinityUseCase } from '../services/usecases/find-posts-in-user-vicinity.usecase';
+import { FindPostsInBoundingBoxUseCase } from '../services/usecases/find-posts-in-bounding-box.usecase';
+import { FindPostsInBoundingBoxRequestDto } from '../dto/find-posts-in-bounding-box-request.dto';
+import { FindPostsInBoundingBoxResponseDto } from '../dto/find-posts-in-bounding-box-response.dto';
 
 @Controller('posts')
 export class PostController {
@@ -28,6 +31,8 @@ export class PostController {
     private readonly findPostByUuidService: FindPostByUuidUseCase,
     @Inject(PostsDiTokens.FindPostsInUserVicinityService)
     private readonly findPostsInUserVicinityService: FindPostsInUserVicinityUseCase,
+    @Inject(PostsDiTokens.FindPostsInBoundingBoxService)
+    private readonly findPostsInBoundingBoxService: FindPostsInBoundingBoxUseCase,
   ) {}
 
   @Post()
@@ -56,6 +61,40 @@ export class PostController {
     };
   }
 
+  @Get('bounding-box')
+  async findPostsInBoundingBox(@Body() payload: FindPostsInBoundingBoxRequestDto): Promise<FindPostsInBoundingBoxResponseDto[]> {
+    const posts = await this.findPostsInBoundingBoxService.execute({
+      boxLength: payload.boxLength,
+      boxWidth: payload.boxWidth,
+      latitude: payload.latitude,
+      longitude: payload.longitude,
+    });
+
+    return posts.map((post) => ({
+      post: {
+        uuid: post.uuid,
+        title: post.title,
+        body: post.body,
+        latitude: post.latitude,
+        longitude: post.longitude,
+        imageName: post.imageName,
+        videoName: post.videoName,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+        deletedAt: post.deletedAt,
+      },
+      creator: {
+        uuid: post.user.uuid,
+        profile: {
+          uuid: post.user.profile.uuid,
+          nickname: post.user.profile.nickname,
+          profilePictureName: post.user.profile.profilePictureName,
+          points: post.user.profile.points,
+        },
+      },
+    }));
+  }
+
   @Get(':uuid')
   async findPostByUuid(@Param('uuid') uuid: string, @Body() payload: BaseLocationDto): Promise<FindPostByUuidResponseDto> {
     const result = await this.findPostByUuidService.execute({
@@ -81,7 +120,6 @@ export class PostController {
       },
       creator: {
         uuid: post.user.uuid,
-        username: post.user.username,
         profile: {
           uuid: post.user.profile.uuid,
           nickname: post.user.profile.nickname,
@@ -163,7 +201,6 @@ export class PostController {
       },
       creator: {
         uuid: post.user.uuid,
-        username: post.user.username,
         profile: {
           uuid: post.user.profile.uuid,
           nickname: post.user.profile.nickname,
