@@ -84,15 +84,22 @@ export class PostRepository implements PostRepositoryInterface {
       .getMany();
   }
 
-  async findInVicinity(pointLocation: PointLocation, vicinityDistance: number, page: number = 1, limit: number = 5): Promise<Post[] | null> {
+  async findInVicinity(
+    pointLocation: PointLocation,
+    vicinityDistance: number,
+    page: number = 1,
+    limit: number = 5,
+  ): Promise<Array<{ post: Post; approvalCount: number; commentCount: number }> | null> {
     const offset = (page - 1) * limit;
 
-    return await this.repository
+    const result = await this.repository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.user', 'user')
       .leftJoinAndSelect('user.profile', 'profile')
       .leftJoin('post.approvals', 'approval')
-      .addSelect('COUNT(approval.id)', 'approvalCount')
+      .leftJoin('post.comments', 'comment')
+      .addSelect('COUNT(DISTINCT approval.id)', 'approvalCount')
+      .addSelect('COUNT(DISTINCT comment.id)', 'commentCount')
       .where(
         `
         6371000 * acos(
@@ -110,9 +117,27 @@ export class PostRepository implements PostRepositoryInterface {
         },
       )
       .groupBy('post.id, user.id, profile.id')
-      .orderBy('approvalCount', 'DESC')
       .skip(offset)
       .take(limit)
-      .getMany();
+      .getRawAndEntities();
+
+    if (!result.entities.length) {
+      return null;
+    }
+
+    const mappedResults = result.entities.map((post, index) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      const approvalCount = parseInt(result.raw[index]?.approvalCount || '0', 10);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      const commentCount = parseInt(result.raw[index]?.commentCount || '0', 10);
+
+      return {
+        post,
+        approvalCount,
+        commentCount,
+      };
+    });
+
+    return mappedResults.sort((a, b) => b.approvalCount - a.approvalCount);
   }
 }

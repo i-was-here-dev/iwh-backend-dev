@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Inject, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Inject, Param, Post, Query } from '@nestjs/common';
 import { SavePostUseCase } from '../services/usecases/save-post.usecase';
 import { SavePostRequestDto } from '../dto/save-post-request.dto';
 import { PostsDiTokens } from '../di/posts-tokens.di';
@@ -12,6 +12,8 @@ import { DeleteApprovalRequestDto } from '../dto/delete-approval-request.dto';
 import { FindPostByUuidUseCase } from '../services/usecases/find-post-by-uuid.usecase';
 import { BaseLocationDto } from '../dto/abstracts/base-location.abstract';
 import { FindPostByUuidResponseDto } from '../dto/find-post-by-uuid-response.dto';
+import { FindPostsInVicinityResponseDto } from '../dto/find-posts-in-vicinity-response.dto';
+import { FindPostsInUserVicinityUseCase } from '../services/usecases/find-posts-in-user-vicinity.usecase';
 
 @Controller('posts')
 export class PostController {
@@ -24,6 +26,8 @@ export class PostController {
     private readonly deleteApprovalService: DeleteApprovalUseCase,
     @Inject(PostsDiTokens.FindPostByUuidService)
     private readonly findPostByUuidService: FindPostByUuidUseCase,
+    @Inject(PostsDiTokens.FindPostsInUserVicinityService)
+    private readonly findPostsInUserVicinityService: FindPostsInUserVicinityUseCase,
   ) {}
 
   @Post()
@@ -134,5 +138,41 @@ export class PostController {
       longitude: payload.longitude,
       userId: user.id,
     });
+  }
+
+  @Get('vicinity')
+  async findPostsInVicinity(@Body() payload: BaseLocationDto, @Query('page') page?: number): Promise<FindPostsInVicinityResponseDto[]> {
+    const result = await this.findPostsInUserVicinityService.execute({
+      latitude: payload.latitude,
+      longitude: payload.longitude,
+      page: page || 1,
+    });
+
+    return result.map(({ post, approvalCount, commentCount }) => ({
+      post: {
+        uuid: post.uuid,
+        title: post.title,
+        body: post.body,
+        latitude: post.latitude,
+        longitude: post.longitude,
+        imageName: post.imageName,
+        videoName: post.videoName,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+        deletedAt: post.deletedAt,
+      },
+      creator: {
+        uuid: post.user.uuid,
+        username: post.user.username,
+        profile: {
+          uuid: post.user.profile.uuid,
+          nickname: post.user.profile.nickname,
+          profilePictureName: post.user.profile.profilePictureName,
+          points: post.user.profile.points,
+        },
+      },
+      approvalCount,
+      commentCount,
+    }));
   }
 }
