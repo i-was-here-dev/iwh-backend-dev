@@ -46,6 +46,7 @@ export class PostController {
       deletedAt: post.deletedAt,
     };
   }
+
   @HttpCode(204)
   @Post(':uuid/approvals')
   async saveApproval(
