@@ -802,52 +802,58 @@ components:
     SavePostResponse:
       type: object
       properties:
-        uuid:
-          type: string
-          format: uuid
-          description: Post UUID
-          example: 123e4567-e89b-12d3-a456-426614174002
-        latitude:
-          type: number
-          format: float
-          description: Post location latitude
-          example: 40.7589
-        longitude:
-          type: number
-          format: float
-          description: Post location longitude
-          example: -73.9851
-        title:
-          type: string
-          description: Post title
-          example: Beautiful sunset
-        body:
-          type: string
-          description: Post content
-          example: Amazing view from the top of the mountain
-        imageName:
-          type: string
-          nullable: true
-          description: Image filename
-          example: sunset_photo_001.jpg
-        videoName:
-          type: string
-          nullable: true
-          description: Video filename
-          example: sunset_video_001.mp4
-        createdAt:
-          type: string
-          format: date-time
-          description: Post creation timestamp
-          example: 2025-11-24T10:30:00Z
-        updatedAt:
-          type: string
-          format: date-time
-          description: Post last update timestamp
-          example: 2025-11-24T10:30:00Z
-        deletedAt:
-          type: string
-          nullable: true
+        post:
+          type: object
+          properties:
+            uuid:
+              type: string
+              format: uuid
+              description: Post UUID
+              example: 123e4567-e89b-12d3-a456-426614174002
+            latitude:
+              type: number
+              format: float
+              description: Post location latitude
+              example: 40.7589
+            longitude:
+              type: number
+              format: float
+              description: Post location longitude
+              example: -73.9851
+            title:
+              type: string
+              description: Post title
+              example: Beautiful sunset
+            body:
+              type: string
+              description: Post content
+              example: Amazing view from the top of the mountain
+            imageName:
+              type: string
+              nullable: true
+              description: Image filename
+              example: sunset_photo_001.jpg
+            videoName:
+              type: string
+              nullable: true
+              description: Video filename
+              example: sunset_video_001.mp4
+            createdAt:
+              type: string
+              format: date-time
+              description: Post creation timestamp
+              example: 2025-11-24T10:30:00Z
+            updatedAt:
+              type: string
+              format: date-time
+              description: Post last update timestamp
+              example: 2025-11-24T10:30:00Z
+            deletedAt:
+              type: string
+              nullable: true
+              format: date-time
+              description: Post soft deletion timestamp
+              example: null
           format: date-time
           description: Post soft deletion timestamp
           example: null
@@ -1050,31 +1056,34 @@ components:
     UpdateCommentResponse:
       type: object
       properties:
-        uuid:
-          type: string
-          format: uuid
-          description: Comment UUID
-          example: 123e4567-e89b-12d3-a456-426614174003
-        body:
-          type: string
-          description: Comment content
-          example: This is my updated comment about this amazing place!
-        createdAt:
-          type: string
-          format: date-time
-          description: Comment creation timestamp
-          example: 2025-11-25T10:30:00Z
-        updatedAt:
-          type: string
-          format: date-time
-          description: Comment last update timestamp
-          example: 2025-11-25T14:45:00Z
-        deletedAt:
-          type: string
-          nullable: true
-          format: date-time
-          description: Comment soft deletion timestamp
-          example: null
+        comment:
+          type: object
+          properties:
+            uuid:
+              type: string
+              format: uuid
+              description: Comment UUID
+              example: 123e4567-e89b-12d3-a456-426614174003
+            body:
+              type: string
+              description: Comment content
+              example: This is my updated comment about this amazing place!
+            createdAt:
+              type: string
+              format: date-time
+              description: Comment creation timestamp
+              example: 2025-11-25T10:30:00Z
+            updatedAt:
+              type: string
+              format: date-time
+              description: Comment last update timestamp
+              example: 2025-11-25T14:45:00Z
+            deletedAt:
+              type: string
+              nullable: true
+              format: date-time
+              description: Comment soft deletion timestamp
+              example: null
     SoftDeleteCommentRequest:
       type: object
       required:
@@ -1123,31 +1132,34 @@ components:
     SaveCommentResponse:
       type: object
       properties:
-        uuid:
-          type: string
-          format: uuid
-          description: Comment UUID
-          example: 123e4567-e89b-12d3-a456-426614174003
-        body:
-          type: string
-          description: Comment content
-          example: What an amazing place! Had a great time here.
-        createdAt:
-          type: string
-          format: date-time
-          description: Comment creation timestamp
-          example: 2025-11-25T10:30:00Z
-        updatedAt:
-          type: string
-          format: date-time
-          description: Comment last update timestamp
-          example: 2025-11-25T10:30:00Z
-        deletedAt:
-          type: string
-          nullable: true
-          format: date-time
-          description: Comment soft deletion timestamp
-          example: null
+        comment:
+          type: object
+          properties:
+            uuid:
+              type: string
+              format: uuid
+              description: Comment UUID
+              example: 123e4567-e89b-12d3-a456-426614174003
+            body:
+              type: string
+              description: Comment content
+              example: What an amazing place! Had a great time here.
+            createdAt:
+              type: string
+              format: date-time
+              description: Comment creation timestamp
+              example: 2025-11-25T10:30:00Z
+            updatedAt:
+              type: string
+              format: date-time
+              description: Comment last update timestamp
+              example: 2025-11-25T10:30:00Z
+            deletedAt:
+              type: string
+              nullable: true
+              format: date-time
+              description: Comment soft deletion timestamp
+              example: null
     UpdateProfileRequest:
       type: object
       properties:
@@ -1162,23 +1174,26 @@ components:
     UpdateProfileResponse:
       type: object
       properties:
-        uuid:
-          type: string
-          format: uuid
-          description: Profile UUID
-          example: 123e4567-e89b-12d3-a456-426614174001
-        nickname:
-          type: string
-          description: User's display nickname
-          example: JohnDoe2024_Updated
-        points:
-          type: integer
-          description: User's accumulated points
-          example: 1250
-        profilePictureName:
-          type: string
-          description: Profile picture filename
-          example: updated_profile_12345.jpg
+        profile:
+          type: object
+          properties:
+            uuid:
+              type: string
+              format: uuid
+              description: Profile UUID
+              example: 123e4567-e89b-12d3-a456-426614174001
+            nickname:
+              type: string
+              description: User's display nickname
+              example: JohnDoe2024_Updated
+            points:
+              type: integer
+              description: User's accumulated points
+              example: 1250
+            profilePictureName:
+              type: string
+              description: Profile picture filename
+              example: updated_profile_12345.jpg
     User:
       type: object
       properties:
@@ -1215,23 +1230,26 @@ components:
     ProfileResponse:
       type: object
       properties:
-        uuid:
-          type: string
-          format: uuid
-          description: Profile UUID
-          example: 123e4567-e89b-12d3-a456-426614174001
-        nickname:
-          type: string
-          description: User's display nickname
-          example: JohnDoe2024
-        points:
-          type: integer
-          description: User's accumulated points
-          example: 1250
-        profilePictureName:
-          type: string
-          description: Profile picture filename
-          example: profile_12345.jpg
+        profile:
+          type: object
+          properties:
+            uuid:
+              type: string
+              format: uuid
+              description: Profile UUID
+              example: 123e4567-e89b-12d3-a456-426614174001
+            nickname:
+              type: string
+              description: User's display nickname
+              example: JohnDoe2024
+            points:
+              type: integer
+              description: User's accumulated points
+              example: 1250
+            profilePictureName:
+              type: string
+              description: Profile picture filename
+              example: profile_12345.jpg
         posts:
           type: array
           description: User's posts
