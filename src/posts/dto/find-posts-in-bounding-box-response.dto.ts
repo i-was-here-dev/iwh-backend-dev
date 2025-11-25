@@ -1,4 +1,4 @@
-export class FindPostsInVicinityResponseDto {
+export class FindPostsInBoundingBoxResponseDto {
   post: {
     uuid: string;
     title: string;
@@ -21,7 +21,4 @@ export class FindPostsInVicinityResponseDto {
       points: number;
     };
   };
-
-  approvalCount: number;
-  commentCount: number;
 }
