@@ -7,7 +7,12 @@ export interface PostRepositoryInterface {
   findByUuid(uuid: string): Promise<Post | null>;
   findByUuidWithDetails(uuid: string): Promise<{ post: Post; approvalCount: number } | null>;
   findInBoundingBox(query: BoundingBoxQuery): Promise<Post[] | null>;
-  findInVicinity(pointLocation: PointLocation, vicinityDistance: number, page?: number, limit?: number): Promise<Post[] | null>;
+  findInVicinity(
+    pointLocation: PointLocation,
+    vicinityDistance: number,
+    page?: number,
+    limit?: number,
+  ): Promise<Array<{ post: Post; approvalCount: number; commentCount: number }> | null>;
   save(post: Post): Promise<Post>;
   softDelete(post: Post): Promise<boolean>;
 }

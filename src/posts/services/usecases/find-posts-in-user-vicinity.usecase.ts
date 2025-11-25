@@ -7,4 +7,10 @@ export type FindPostsInUserVicinityPort = {
   page?: number;
 };
 
-export interface FindPostsInUserVicinityUseCase extends UseCase<FindPostsInUserVicinityPort, Post[]> {}
+export type FindPostsInUserVicinityResponse = Array<{
+  post: Post;
+  approvalCount: number;
+  commentCount: number;
+}>;
+
+export interface FindPostsInUserVicinityUseCase extends UseCase<FindPostsInUserVicinityPort, FindPostsInUserVicinityResponse> {}
