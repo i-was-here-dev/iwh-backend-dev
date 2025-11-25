@@ -36,19 +36,19 @@ export class Post {
   @Index('idx_posts_uuid')
   uuid: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Index()
-  userId: number;
+  userId: number | null;
 
-  @ManyToOne(() => User, (user) => user.posts)
+  @ManyToOne(() => User, (user) => user.posts, { nullable: true })
   @JoinColumn()
   @Index('idx_posts_user_id')
-  user: User;
+  user: User | null;
 
-  @OneToMany(() => Comment, (comment) => comment.post)
+  @OneToMany(() => Comment, (comment) => comment.post, { onDelete: 'CASCADE' })
   comments: Comment[];
 
-  @OneToMany(() => Approval, (approval) => approval.post)
+  @OneToMany(() => Approval, (approval) => approval.post, { onDelete: 'CASCADE' })
   approvals: Approval[];
 
   @Column({ name: 'title' })

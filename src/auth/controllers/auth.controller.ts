@@ -55,8 +55,10 @@ export class AuthController {
         deletedAt: saveUserServiceResponse.user.deletedAt,
       },
       profile: {
+        uuid: saveUserServiceResponse.profile.uuid,
         nickname: saveUserServiceResponse.profile.nickname,
         profilePictureName: saveUserServiceResponse.profile.profilePictureName,
+        points: saveUserServiceResponse.profile.points,
       },
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,

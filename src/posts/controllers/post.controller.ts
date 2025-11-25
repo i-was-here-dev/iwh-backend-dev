@@ -83,15 +83,19 @@ export class PostController {
         updatedAt: post.updatedAt,
         deletedAt: post.deletedAt,
       },
-      creator: {
-        uuid: post.user.uuid,
-        profile: {
-          uuid: post.user.profile.uuid,
-          nickname: post.user.profile.nickname,
-          profilePictureName: post.user.profile.profilePictureName,
-          points: post.user.profile.points,
-        },
-      },
+      creator: post.user
+        ? {
+            uuid: post.user.uuid,
+            profile: post.user.profile
+              ? {
+                  uuid: post.user.profile.uuid,
+                  nickname: post.user.profile.nickname,
+                  profilePictureName: post.user.profile.profilePictureName,
+                  points: post.user.profile.points,
+                }
+              : null,
+          }
+        : null,
     }));
   }
 
@@ -118,32 +122,41 @@ export class PostController {
         updatedAt: post.updatedAt,
         deletedAt: post.deletedAt,
       },
-      creator: {
-        uuid: post.user.uuid,
-        profile: {
-          uuid: post.user.profile.uuid,
-          nickname: post.user.profile.nickname,
-          profilePictureName: post.user.profile.profilePictureName,
-          points: post.user.profile.points,
-        },
-      },
-      comments: post.comments.map((comment) => ({
-        uuid: comment.uuid,
-        body: comment.body,
-        createdAt: comment.createdAt,
-        updatedAt: comment.updatedAt,
-        deletedAt: comment.deletedAt,
-        user: {
-          uuid: comment.user.uuid,
-          username: comment.user.username,
-          profile: {
-            uuid: comment.user.profile.uuid,
-            nickname: comment.user.profile.nickname,
-            profilePictureName: comment.user.profile.profilePictureName,
-            points: comment.user.profile.points,
-          },
-        },
-      })),
+      creator: post.user
+        ? {
+            uuid: post.user.uuid,
+            profile: post.user.profile
+              ? {
+                  uuid: post.user.profile.uuid,
+                  nickname: post.user.profile.nickname,
+                  profilePictureName: post.user.profile.profilePictureName,
+                  points: post.user.profile.points,
+                }
+              : null,
+          }
+        : null,
+      comments:
+        post.comments?.map((comment) => ({
+          uuid: comment.uuid,
+          body: comment.body,
+          createdAt: comment.createdAt,
+          updatedAt: comment.updatedAt,
+          deletedAt: comment.deletedAt,
+          user: comment.user
+            ? {
+                uuid: comment.user.uuid,
+                username: comment.user.username,
+                profile: comment.user.profile
+                  ? {
+                      uuid: comment.user.profile.uuid,
+                      nickname: comment.user.profile.nickname,
+                      profilePictureName: comment.user.profile.profilePictureName,
+                      points: comment.user.profile.points,
+                    }
+                  : null,
+              }
+            : null,
+        })) || [],
       approvalCount,
     };
   }
@@ -199,15 +212,19 @@ export class PostController {
         updatedAt: post.updatedAt,
         deletedAt: post.deletedAt,
       },
-      creator: {
-        uuid: post.user.uuid,
-        profile: {
-          uuid: post.user.profile.uuid,
-          nickname: post.user.profile.nickname,
-          profilePictureName: post.user.profile.profilePictureName,
-          points: post.user.profile.points,
-        },
-      },
+      creator: post.user
+        ? {
+            uuid: post.user.uuid,
+            profile: post.user.profile
+              ? {
+                  uuid: post.user.profile.uuid,
+                  nickname: post.user.profile.nickname,
+                  profilePictureName: post.user.profile.profilePictureName,
+                  points: post.user.profile.points,
+                }
+              : null,
+          }
+        : null,
       approvalCount,
       commentCount,
     }));

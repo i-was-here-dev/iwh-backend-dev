@@ -22,17 +22,17 @@ export class Comment {
   @Generated('uuid')
   uuid: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Index()
-  userId: number;
+  userId: number | null;
 
   @ManyToOne(() => Post, (post) => post.comments)
   @JoinColumn()
   post: Post;
 
-  @ManyToOne(() => User, (user) => user.comments)
+  @ManyToOne(() => User, (user) => user.comments, { nullable: true })
   @JoinColumn()
-  user: User;
+  user: User | null;
 
   @Column({ name: 'body', type: 'text' })
   body: string;

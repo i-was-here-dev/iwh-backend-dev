@@ -8,8 +8,10 @@ export class RegisterResponseDto {
     updatedAt: Date;
   };
   profile: {
+    uuid: string;
     nickname: string;
     profilePictureName: string;
+    points: number;
   };
   refreshToken: string;
   accessToken: string;
