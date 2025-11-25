@@ -13,12 +13,6 @@ import {
 import { Post } from './post.entity';
 import { User } from 'src/users/entities/user.entity';
 
-type CommentData = {
-  userId: number;
-  postUuid: string;
-  body: string;
-};
-
 @Entity('comments')
 export class Comment {
   @PrimaryGeneratedColumn()
