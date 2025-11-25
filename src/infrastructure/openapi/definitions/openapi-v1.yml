@@ -300,6 +300,35 @@ paths:
           $ref: '#/components/responses/JwtUnauthorizedError'
         '404':
           $ref: '#/components/responses/NotFoundError'
+    patch:
+      operationId: updateProfile
+      summary: Update current user's profile
+      description: Update the authenticated user's profile information including nickname and profile picture
+      security:
+        - bearerAuth: []
+      tags:
+        - Profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+      responses:
+        '200':
+          description: User profile successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateProfileResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/JwtUnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityError'
 components:
   securitySchemes: 
     bearerAuth:
@@ -735,7 +764,38 @@ components:
           nullable: true
           format: date-time
           description: Comment soft deletion timestamp
-          example: null  
+          example: null
+    UpdateProfileRequest:
+      type: object
+      properties:
+        nickname:
+          type: string
+          description: User's display nickname
+          example: JohnDoe2024_Updated
+        profilePictureName:
+          type: string
+          description: Profile picture filename
+          example: updated_profile_12345.jpg
+    UpdateProfileResponse:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          description: Profile UUID
+          example: 123e4567-e89b-12d3-a456-426614174001
+        nickname:
+          type: string
+          description: User's display nickname
+          example: JohnDoe2024_Updated
+        points:
+          type: integer
+          description: User's accumulated points
+          example: 1250
+        profilePictureName:
+          type: string
+          description: Profile picture filename
+          example: updated_profile_12345.jpg
     User:
       type: object
       properties:
