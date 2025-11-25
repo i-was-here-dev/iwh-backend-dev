@@ -198,6 +198,47 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         '422':
           $ref: '#/components/responses/UnprocessableEntityError'
+  /posts/{postUuid}/comments:
+    post:
+      operationId: saveComment
+      summary: Create a comment on a post
+      description: Create a new comment on a specific post by providing the user's current location to verify they are near the post location
+      security:
+        - bearerAuth: []
+      tags:
+        - Comments
+      parameters:
+        - name: postUuid
+          in: path
+          required: true
+          description: UUID of the post to comment on
+          schema:
+            type: string
+            format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174002
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaveCommentRequest'
+      responses:
+        '201':
+          description: Comment successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaveCommentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/JwtUnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityError'
   /posts/comments/{commentUuid}:
     patch:
       operationId: updateComment
@@ -636,6 +677,59 @@ components:
           format: date-time
           description: Comment last update timestamp
           example: 2025-11-25T14:45:00Z
+        deletedAt:
+          type: string
+          nullable: true
+          format: date-time
+          description: Comment soft deletion timestamp
+          example: null
+    SaveCommentRequest:
+      type: object
+      required:
+        - body
+        - latitude
+        - longitude
+      properties:
+        body:
+          type: string
+          description: Comment content
+          example: What an amazing place! Had a great time here.
+        latitude:
+          type: number
+          format: float
+          minimum: -90
+          maximum: 90
+          description: User's current latitude to verify they are near the post location
+          example: 40.7589
+        longitude:
+          type: number
+          format: float
+          minimum: -180
+          maximum: 180
+          description: User's current longitude to verify they are near the post location
+          example: -73.9851
+    SaveCommentResponse:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          description: Comment UUID
+          example: 123e4567-e89b-12d3-a456-426614174003
+        body:
+          type: string
+          description: Comment content
+          example: What an amazing place! Had a great time here.
+        createdAt:
+          type: string
+          format: date-time
+          description: Comment creation timestamp
+          example: 2025-11-25T10:30:00Z
+        updatedAt:
+          type: string
+          format: date-time
+          description: Comment last update timestamp
+          example: 2025-11-25T10:30:00Z
         deletedAt:
           type: string
           nullable: true

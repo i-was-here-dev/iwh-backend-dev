@@ -20,6 +20,8 @@ import { CommentRepository } from './repositories/postgres/comment.repository';
 import { CommentRepositoryInterface } from './repositories/comment-repository.interface';
 import { DeleteApprovalService } from './services/delete-approval.service';
 import { PostController } from './controllers/post.controller';
+import { SaveCommentService } from './services/save-comment.service';
+import { CommentController } from './controllers/comment.controller';
 
 const repositoryProviders: Provider[] = [
   {
@@ -97,10 +99,16 @@ const serviceProviders: Provider[] = [
       new DeleteApprovalService(approvalRepository, postRepository),
     inject: [PostsDiTokens.ApprovalRepositoryInterface, PostsDiTokens.PostRepositoryInterface],
   },
+  {
+    provide: PostsDiTokens.SaveCommentService,
+    useFactory: (commentRepository: CommentRepositoryInterface, postRepository: PostRepositoryInterface) =>
+      new SaveCommentService(commentRepository, postRepository),
+    inject: [PostsDiTokens.CommentRepositoryInterface, PostsDiTokens.PostRepositoryInterface],
+  },
 ];
 
 @Module({
-  controllers: [PostController],
+  controllers: [PostController, CommentController],
   providers: [...repositoryProviders, ...serviceProviders],
 })
 export class PostsModule {}
