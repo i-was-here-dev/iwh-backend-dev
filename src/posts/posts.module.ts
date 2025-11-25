@@ -22,6 +22,7 @@ import { DeleteApprovalService } from './services/delete-approval.service';
 import { PostController } from './controllers/post.controller';
 import { SaveCommentService } from './services/save-comment.service';
 import { CommentController } from './controllers/comment.controller';
+import { SoftDeleteCommentService } from './services/soft-delete-comment.service';
 
 const repositoryProviders: Provider[] = [
   {
@@ -104,6 +105,11 @@ const serviceProviders: Provider[] = [
     useFactory: (commentRepository: CommentRepositoryInterface, postRepository: PostRepositoryInterface) =>
       new SaveCommentService(commentRepository, postRepository),
     inject: [PostsDiTokens.CommentRepositoryInterface, PostsDiTokens.PostRepositoryInterface],
+  },
+  {
+    provide: PostsDiTokens.SoftDeleteCommentService,
+    useFactory: (commentRepository: CommentRepositoryInterface) => new SoftDeleteCommentService(commentRepository),
+    inject: [PostsDiTokens.CommentRepositoryInterface],
   },
 ];
 
