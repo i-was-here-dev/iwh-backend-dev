@@ -198,6 +198,47 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         '422':
           $ref: '#/components/responses/UnprocessableEntityError'
+  /posts/comments/{commentUuid}:
+    patch:
+      operationId: updateComment
+      summary: Update a comment
+      description: Update an existing comment's content by providing the user's current location to verify they are near the original post location
+      security:
+        - bearerAuth: []
+      tags:
+        - Comments
+      parameters:
+        - name: commentUuid
+          in: path
+          required: true
+          description: UUID of the comment to update
+          schema:
+            type: string
+            format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174003
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCommentRequest'
+      responses:
+        '200':
+          description: Comment successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateCommentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/JwtUnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityError'
   /profile/me:
     get:
       operationId: findProfileByUserId
@@ -547,7 +588,60 @@ components:
           minimum: -180
           maximum: 180
           description: User's current longitude to verify location for approval deletion
-          example: -73.9851  
+          example: -73.9851
+    UpdateCommentRequest:
+      type: object
+      required:
+        - latitude
+        - longitude
+        - body
+      properties:
+        latitude:
+          type: number
+          format: float
+          minimum: -90
+          maximum: 90
+          description: User's current latitude to verify they are near the post location
+          example: 40.7589
+        longitude:
+          type: number
+          format: float
+          minimum: -180
+          maximum: 180
+          description: User's current longitude to verify they are near the post location
+          example: -73.9851
+        body:
+          type: string
+          description: Updated comment content
+          example: This is my updated comment about this amazing place!
+    UpdateCommentResponse:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          description: Comment UUID
+          example: 123e4567-e89b-12d3-a456-426614174003
+        body:
+          type: string
+          description: Comment content
+          example: This is my updated comment about this amazing place!
+        createdAt:
+          type: string
+          format: date-time
+          description: Comment creation timestamp
+          example: 2025-11-25T10:30:00Z
+        updatedAt:
+          type: string
+          format: date-time
+          description: Comment last update timestamp
+          example: 2025-11-25T14:45:00Z
+        deletedAt:
+          type: string
+          nullable: true
+          format: date-time
+          description: Comment soft deletion timestamp
+          example: null  
     User:
       type: object
       properties:
