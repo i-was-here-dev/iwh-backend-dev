@@ -16,6 +16,7 @@ import { UserProfileRepositoryInterface } from './repositories/user-profile-repo
 import { FindProfileByUserIdService } from './services/find-profile-by-user.id.service';
 import { ProfileController } from './controllers/user-profile.controller';
 import { UpdateProfileService } from './services/update-user-profile.service';
+import { FindProfileByUuidService } from './services/find-profile-by-uuid.service';
 
 const repositoryProvider: Array<Provider> = [
   {
@@ -70,6 +71,11 @@ const serviceProvider: Array<Provider> = [
   {
     provide: UsersDiTokens.UpdateProfileService,
     useFactory: (userProfileRepository: UserProfileRepositoryInterface) => new UpdateProfileService(userProfileRepository),
+    inject: [UsersDiTokens.UserProfileRepositoryInterface],
+  },
+  {
+    provide: UsersDiTokens.FindProfileByUuidService,
+    useFactory: (userProfileRepository: UserProfileRepositoryInterface) => new FindProfileByUuidService(userProfileRepository),
     inject: [UsersDiTokens.UserProfileRepositoryInterface],
   },
 ];
