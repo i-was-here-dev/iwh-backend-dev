@@ -13,8 +13,8 @@ import { UpdateProfileResponseDto } from '../dto/update-profile-response.dto';
 export class ProfileController {
   constructor(
     @Inject(UsersDiTokens.FindProfileByUserIdService)
-    @Inject(UsersDiTokens.UpdateProfileService)
     private readonly findProfileByUserIdService: FindProfileByUserIdUseCase,
+    @Inject(UsersDiTokens.UpdateProfileService)
     private readonly updateProfileService: UpdateProfileUseCase,
   ) {}
 
