@@ -697,6 +697,11 @@ components:
         profile:
           type: object
           properties:
+            uuid:
+              type: string
+              format: uuid
+              description: Profile UUID
+              example: profile-uuid-456
             nickname:
               type: string
               description: User's display nickname
@@ -706,6 +711,10 @@ components:
               nullable: true
               description: Profile picture filename
               example: profile_12345.jpg
+            points:
+              type: integer
+              description: User's points
+              example: 0
         accessToken:
           type: string
           description: JWT access token
