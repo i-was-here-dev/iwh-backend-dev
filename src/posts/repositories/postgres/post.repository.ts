@@ -25,6 +25,7 @@ export class PostRepository implements PostRepositoryInterface {
       where: {
         uuid: uuid,
       },
+      relations: ['post'],
     });
   }
 

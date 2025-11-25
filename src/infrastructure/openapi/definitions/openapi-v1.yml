@@ -393,6 +393,42 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         '422':
           $ref: '#/components/responses/UnprocessableEntityError'
+    delete:
+      operationId: softDeleteComment
+      summary: Soft delete a comment
+      description: Soft delete a comment by marking it as deleted, requiring the user's current location to verify they are near the original post location
+      security:
+        - bearerAuth: []
+      tags:
+        - Comments
+      parameters:
+        - name: commentUuid
+          in: path
+          required: true
+          description: UUID of the comment to soft delete
+          schema:
+            type: string
+            format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174003
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoftDeleteCommentRequest'
+      responses:
+        '204':
+          description: Comment successfully soft deleted
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/JwtUnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityError'
   /profile/me:
     get:
       operationId: findProfileByUserId
@@ -956,6 +992,26 @@ components:
           format: date-time
           description: Comment soft deletion timestamp
           example: null
+    SoftDeleteCommentRequest:
+      type: object
+      required:
+        - latitude
+        - longitude
+      properties:
+        latitude:
+          type: number
+          format: double
+          minimum: -90
+          maximum: 90
+          description: User's current latitude to verify they are near the post location
+          example: 40.7589
+        longitude:
+          type: number
+          format: double
+          minimum: -180
+          maximum: 180
+          description: User's current longitude to verify they are near the post location
+          example: -73.9851
     SaveCommentRequest:
       type: object
       required:
