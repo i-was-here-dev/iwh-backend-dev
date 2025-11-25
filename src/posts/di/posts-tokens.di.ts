@@ -8,6 +8,7 @@ export class PostsDiTokens {
 
   public static readonly SavePostService: string = 'SavePostService';
   public static readonly SaveApprovalService: string = 'SaveApprovalService';
+  public static readonly SaveCommentService: string = 'SaveCommentService';
   public static readonly FindPostsByUserIdService: string = 'FindPostsByUserIdService';
   public static readonly FindPostByUuidService: string = 'FindPostByUuidService';
   public static readonly FindPostsInUserVicinityService: string = 'FindPostsInUserVicinityService';
