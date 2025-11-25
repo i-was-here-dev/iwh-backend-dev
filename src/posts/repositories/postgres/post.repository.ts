@@ -28,6 +28,32 @@ export class PostRepository implements PostRepositoryInterface {
     });
   }
 
+  async findByUuidWithDetails(uuid: string): Promise<{ post: Post; approvalCount: number } | null> {
+    const result = await this.repository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.user', 'user')
+      .leftJoinAndSelect('user.profile', 'userProfile')
+      .leftJoinAndSelect('post.comments', 'comments')
+      .leftJoinAndSelect('comments.user', 'commentUser')
+      .leftJoinAndSelect('commentUser.profile', 'commentUserProfile')
+      .leftJoin('post.approvals', 'approvals')
+      .addSelect('COUNT(approvals.id)', 'approvalCount')
+      .where('post.uuid = :uuid', { uuid })
+      .groupBy('post.id, user.id, userProfile.id, comments.id, commentUser.id, commentUserProfile.id')
+      .orderBy('comments.createdAt', 'ASC')
+      .getRawAndEntities();
+
+    if (!result.entities.length) {
+      return null;
+    }
+
+    const post = result.entities[0];
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const approvalCount = parseInt(result.raw[0]?.approvalCount || '0', 10);
+
+    return { post, approvalCount };
+  }
+
   async softDelete(post: Post): Promise<boolean> {
     const result: UpdateResult = await this.repository.softDelete(post.id);
 

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, HttpCode, HttpStatus, Inject, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Inject, Param, Post } from '@nestjs/common';
 import { SavePostUseCase } from '../services/usecases/save-post.usecase';
 import { SavePostRequestDto } from '../dto/save-post-request.dto';
 import { PostsDiTokens } from '../di/posts-tokens.di';
@@ -9,6 +9,9 @@ import { SaveApprovalRequestDto } from '../dto/save-approval-request.dto';
 import { SaveApprovalUseCase } from '../services/usecases/save-approval.usecase';
 import { DeleteApprovalUseCase } from '../services/usecases/delete-approval.usecase';
 import { DeleteApprovalRequestDto } from '../dto/delete-approval-request.dto';
+import { FindPostByUuidUseCase } from '../services/usecases/find-post-by-uuid.usecase';
+import { BaseLocationDto } from '../dto/abstracts/base-location.abstract';
+import { FindPostByUuidResponseDto } from '../dto/find-post-by-uuid-response.dto';
 
 @Controller('posts')
 export class PostController {
@@ -19,6 +22,8 @@ export class PostController {
     private readonly saveApprovalService: SaveApprovalUseCase,
     @Inject(PostsDiTokens.DeleteApprovalService)
     private readonly deleteApprovalService: DeleteApprovalUseCase,
+    @Inject(PostsDiTokens.FindPostByUuidService)
+    private readonly findPostByUuidService: FindPostByUuidUseCase,
   ) {}
 
   @Post()
@@ -44,6 +49,60 @@ export class PostController {
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
       deletedAt: post.deletedAt,
+    };
+  }
+
+  @Get(':uuid')
+  async findPostByUuid(@Param('uuid') uuid: string, @Body() payload: BaseLocationDto): Promise<FindPostByUuidResponseDto> {
+    const result = await this.findPostByUuidService.execute({
+      uuid: uuid,
+      latitude: payload.latitude,
+      longitude: payload.longitude,
+    });
+
+    const { post, approvalCount } = result;
+
+    return {
+      post: {
+        uuid: post.uuid,
+        title: post.title,
+        body: post.body,
+        latitude: post.latitude,
+        longitude: post.longitude,
+        imageName: post.imageName,
+        videoName: post.videoName,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+        deletedAt: post.deletedAt,
+      },
+      creator: {
+        uuid: post.user.uuid,
+        username: post.user.username,
+        profile: {
+          uuid: post.user.profile.uuid,
+          nickname: post.user.profile.nickname,
+          profilePictureName: post.user.profile.profilePictureName,
+          points: post.user.profile.points,
+        },
+      },
+      comments: post.comments.map((comment) => ({
+        uuid: comment.uuid,
+        body: comment.body,
+        createdAt: comment.createdAt,
+        updatedAt: comment.updatedAt,
+        deletedAt: comment.deletedAt,
+        user: {
+          uuid: comment.user.uuid,
+          username: comment.user.username,
+          profile: {
+            uuid: comment.user.profile.uuid,
+            nickname: comment.user.profile.nickname,
+            profilePictureName: comment.user.profile.profilePictureName,
+            points: comment.user.profile.points,
+          },
+        },
+      })),
+      approvalCount,
     };
   }
 
