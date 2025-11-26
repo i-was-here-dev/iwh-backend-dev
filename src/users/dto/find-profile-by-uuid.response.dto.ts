@@ -4,6 +4,9 @@ export class FindProfileByUuidResponseDto {
     nickname: string;
     points: number;
     profilePictureName: string;
+    deletedAt: Date;
+    createdAt: Date;
+    updatedAt: Date;
   };
   posts: {
     uuid: string;
@@ -18,7 +21,4 @@ export class FindProfileByUuidResponseDto {
     body: string;
     createdAt: Date;
   }[];
-  deletedAt: Date;
-  createdAt: Date;
-  updatedAt: Date;
 }

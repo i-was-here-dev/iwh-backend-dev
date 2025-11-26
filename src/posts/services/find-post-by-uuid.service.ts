@@ -1,5 +1,4 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
-import { Post } from '../entities/post.entity';
 import { PostRepositoryInterface } from '../repositories/post-repository.interface';
 import { FindPostByUuidPort, FindPostByUuidUseCase, FindPostByUuidResponse } from './usecases/find-post-by-uuid.usecase';
 import { GeographyUtils } from 'src/common/utilities/geography.utility';

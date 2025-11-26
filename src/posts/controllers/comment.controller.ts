@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, HttpCode, Inject, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, HttpCode, Inject, Param, Patch, Post, Headers } from '@nestjs/common';
 import { UserData } from 'src/auth/decorators/user-data.decorator';
 import { UpdateCommentRequestDto } from '../dto/update-comment-request.dto';
 import { JwtAuthGuardResponse } from 'src/auth/interfaces/jwt-auth-guard-response.interface';
@@ -9,7 +9,6 @@ import { SaveCommentRequestDto } from '../dto/save-comment-request.dto';
 import { SaveCommentUsecase } from '../services/usecases/save-comment.usecase';
 import { SaveCommentResponseDto } from '../dto/save-comment-response.dto';
 import { SoftDeleteCommentUseCase } from '../services/usecases/soft-delete-comment.usecase';
-import { BaseLocationDto } from '../dto/abstracts/base-location.abstract';
 
 @Controller('posts/')
 export class CommentController {
@@ -74,10 +73,15 @@ export class CommentController {
 
   @HttpCode(204)
   @Delete('comments/:uuid')
-  async softDeleteComment(@Param('uuid') uuid: string, @UserData() user: JwtAuthGuardResponse, @Body() payload: BaseLocationDto): Promise<void> {
+  async softDeleteComment(
+    @Param('uuid') uuid: string,
+    @UserData() user: JwtAuthGuardResponse,
+    @Headers('latitude') latitude: string,
+    @Headers('longitude') longitude: string,
+  ): Promise<void> {
     await this.softDeleteCommentService.execute({
-      latitude: payload.latitude,
-      longitude: payload.longitude,
+      latitude: parseFloat(latitude),
+      longitude: parseFloat(longitude),
       userId: user.id,
       uuid: uuid,
     });

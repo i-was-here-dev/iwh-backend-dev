@@ -1,21 +1,17 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Inject, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Post, Query, Headers } from '@nestjs/common';
 import { SavePostUseCase } from '../services/usecases/save-post.usecase';
 import { SavePostRequestDto } from '../dto/save-post-request.dto';
 import { PostsDiTokens } from '../di/posts-tokens.di';
 import { UserData } from 'src/auth/decorators/user-data.decorator';
 import { JwtAuthGuardResponse } from 'src/auth/interfaces/jwt-auth-guard-response.interface';
 import { SavePostResponseDto } from '../dto/save-post-response.dto';
-import { SaveApprovalRequestDto } from '../dto/save-approval-request.dto';
 import { SaveApprovalUseCase } from '../services/usecases/save-approval.usecase';
 import { DeleteApprovalUseCase } from '../services/usecases/delete-approval.usecase';
-import { DeleteApprovalRequestDto } from '../dto/delete-approval-request.dto';
 import { FindPostByUuidUseCase } from '../services/usecases/find-post-by-uuid.usecase';
-import { BaseLocationDto } from '../dto/abstracts/base-location.abstract';
 import { FindPostByUuidResponseDto } from '../dto/find-post-by-uuid-response.dto';
 import { FindPostsInVicinityResponseDto } from '../dto/find-posts-in-vicinity-response.dto';
 import { FindPostsInUserVicinityUseCase } from '../services/usecases/find-posts-in-user-vicinity.usecase';
 import { FindPostsInBoundingBoxUseCase } from '../services/usecases/find-posts-in-bounding-box.usecase';
-import { FindPostsInBoundingBoxRequestDto } from '../dto/find-posts-in-bounding-box-request.dto';
 import { FindPostsInBoundingBoxResponseDto } from '../dto/find-posts-in-bounding-box-response.dto';
 
 @Controller('posts')
@@ -36,10 +32,15 @@ export class PostController {
   ) {}
 
   @Post()
-  async savePost(@UserData() user: JwtAuthGuardResponse, @Body() payload: SavePostRequestDto): Promise<SavePostResponseDto> {
+  async savePost(
+    @Headers('latitude') latitude: string,
+    @Headers('longitude') longitude: string,
+    @UserData() user: JwtAuthGuardResponse,
+    @Body() payload: SavePostRequestDto,
+  ): Promise<SavePostResponseDto> {
     const post = await this.savePostService.execute({
-      latitude: payload.latitude,
-      longitude: payload.longitude,
+      latitude: parseFloat(latitude),
+      longitude: parseFloat(longitude),
       body: payload.body,
       title: payload.title,
       userId: user.id,
@@ -64,12 +65,17 @@ export class PostController {
   }
 
   @Get('bounding-box')
-  async findPostsInBoundingBox(@Body() payload: FindPostsInBoundingBoxRequestDto): Promise<FindPostsInBoundingBoxResponseDto[]> {
+  async findPostsInBoundingBox(
+    @Headers('latitude') latitude: string,
+    @Headers('longitude') longitude: string,
+    @Query('box-length') boxLength: number,
+    @Query('box-width') boxWidth: number,
+  ): Promise<FindPostsInBoundingBoxResponseDto[]> {
     const posts = await this.findPostsInBoundingBoxService.execute({
-      boxLength: payload.boxLength,
-      boxWidth: payload.boxWidth,
-      latitude: payload.latitude,
-      longitude: payload.longitude,
+      boxLength: boxLength,
+      boxWidth: boxWidth,
+      latitude: parseFloat(latitude),
+      longitude: parseFloat(longitude),
     });
 
     return posts.map((post) => ({
@@ -102,11 +108,15 @@ export class PostController {
   }
 
   @Get(':uuid')
-  async findPostByUuid(@Param('uuid') uuid: string, @Body() payload: BaseLocationDto): Promise<FindPostByUuidResponseDto> {
+  async findPostByUuid(
+    @Param('uuid') uuid: string,
+    @Headers('latitude') latitude: string,
+    @Headers('longitude') longitude: string,
+  ): Promise<FindPostByUuidResponseDto> {
     const result = await this.findPostByUuidService.execute({
       uuid: uuid,
-      latitude: payload.latitude,
-      longitude: payload.longitude,
+      latitude: parseFloat(latitude),
+      longitude: parseFloat(longitude),
     });
 
     const { post, approvalCount } = result;
@@ -163,41 +173,15 @@ export class PostController {
     };
   }
 
-  @HttpCode(204)
-  @Post(':uuid/approvals')
-  async saveApproval(
-    @UserData() user: JwtAuthGuardResponse,
-    @Param('uuid') postUuid: string,
-    @Body() payload: SaveApprovalRequestDto,
-  ): Promise<void> {
-    await this.saveApprovalService.execute({
-      postUuid: postUuid,
-      userId: user.id,
-      userLatitude: payload.latitude,
-      userLongitude: payload.longitude,
-    });
-  }
-
-  @HttpCode(204)
-  @Delete(':uuid/approvals')
-  async deleteApproval(
-    @UserData() user: JwtAuthGuardResponse,
-    @Param('uuid') postUuid: string,
-    @Body() payload: DeleteApprovalRequestDto,
-  ): Promise<void> {
-    await this.deleteApprovalService.execute({
-      postUuid: postUuid,
-      latitude: payload.latitude,
-      longitude: payload.longitude,
-      userId: user.id,
-    });
-  }
-
   @Get('vicinity')
-  async findPostsInVicinity(@Body() payload: BaseLocationDto, @Query('page') page?: number): Promise<FindPostsInVicinityResponseDto[]> {
+  async findPostsInVicinity(
+    @Headers('latitude') latitude: string,
+    @Headers('longitude') longitude: string,
+    @Query('page') page?: number,
+  ): Promise<FindPostsInVicinityResponseDto[]> {
     const result = await this.findPostsInUserVicinityService.execute({
-      latitude: payload.latitude,
-      longitude: payload.longitude,
+      latitude: parseFloat(latitude),
+      longitude: parseFloat(longitude),
       page: page || 1,
     });
 
