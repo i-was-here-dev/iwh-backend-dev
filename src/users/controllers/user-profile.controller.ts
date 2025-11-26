@@ -67,6 +67,9 @@ export class ProfileController {
         nickname: profile.nickname,
         points: profile.points,
         profilePictureName: profile.profilePictureName,
+        deletedAt: profile.deletedAt,
+        createdAt: profile.createdAt,
+        updatedAt: profile.updatedAt,
       },
       posts:
         profile.user?.posts?.map((post) => ({
@@ -83,9 +86,6 @@ export class ProfileController {
           body: comment.body,
           createdAt: comment.createdAt,
         })) || [],
-      deletedAt: profile.deletedAt,
-      createdAt: profile.createdAt,
-      updatedAt: profile.updatedAt,
     };
   }
 

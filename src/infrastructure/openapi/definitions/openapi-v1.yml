@@ -104,12 +104,55 @@ paths:
         - bearerAuth: []
       tags:
         - Posts
+      parameters:
+        - name: latitude
+          in: header
+          required: true
+          description: User's current latitude for post location
+          schema:
+            type: number
+            format: double
+            minimum: -90
+            maximum: 90
+          example: 40.7589
+        - name: longitude
+          in: header
+          required: true
+          description: User's current longitude for post location
+          schema:
+            type: number
+            format: double
+            minimum: -180
+            maximum: 180
+          example: -73.9851
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SavePostRequest'
+              type: object
+              required:
+                - title
+                - body
+              properties:
+                title:
+                  type: string
+                  description: Post title
+                  example: "Beautiful sunset"
+                body:
+                  type: string
+                  description: Post content
+                  example: "Amazing view from the park"
+                imageName:
+                  type: string
+                  nullable: true
+                  description: Name of uploaded image file
+                  example: "sunset_12345.jpg"
+                videoName:
+                  type: string
+                  nullable: true
+                  description: Name of uploaded video file
+                  example: "sunset_12345.mp4"
       responses:
         '201':
           description: Post successfully created
@@ -132,12 +175,47 @@ paths:
         - bearerAuth: []
       tags:
         - Posts
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FindPostsInBoundingBoxRequest'
+      parameters:
+        - name: latitude
+          in: header
+          required: true
+          description: Center latitude of the bounding box
+          schema:
+            type: number
+            format: double
+            minimum: -90
+            maximum: 90
+          example: 40.7128
+        - name: longitude
+          in: header
+          required: true
+          description: Center longitude of the bounding box
+          schema:
+            type: number
+            format: double
+            minimum: -180
+            maximum: 180
+          example: -74.0060
+        - name: box-length
+          in: query
+          required: true
+          description: Length of the bounding box in longitude degrees
+          schema:
+            type: number
+            format: double
+            minimum: 0.001
+            maximum: 0.1
+          example: 0.01
+        - name: box-width
+          in: query
+          required: true
+          description: Width of the bounding box in latitude degrees
+          schema:
+            type: number
+            format: double
+            minimum: 0.001
+            maximum: 0.1
+          example: 0.01
       responses:
         '200':
           description: Posts within bounding box successfully retrieved
@@ -163,6 +241,26 @@ paths:
       tags:
         - Posts
       parameters:
+        - name: latitude
+          in: header
+          required: true
+          description: User's current latitude
+          schema:
+            type: number
+            format: double
+            minimum: -90
+            maximum: 90
+          example: 40.7128
+        - name: longitude
+          in: header
+          required: true
+          description: User's current longitude
+          schema:
+            type: number
+            format: double
+            minimum: -180
+            maximum: 180
+          example: -74.0060
         - name: page
           in: query
           required: false
@@ -172,12 +270,6 @@ paths:
             minimum: 1
             default: 1
           example: 1
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FindPostsInVicinityRequest'
       responses:
         '200':
           description: Posts in vicinity successfully retrieved
@@ -213,12 +305,26 @@ paths:
             type: string
             format: uuid
           example: 123e4567-e89b-12d3-a456-426614174002
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FindPostByUuidRequest'
+        - name: latitude
+          in: header
+          required: true
+          description: User's current latitude for location verification
+          schema:
+            type: number
+            format: double
+            minimum: -90
+            maximum: 90
+          example: 40.7589
+        - name: longitude
+          in: header
+          required: true
+          description: User's current longitude for location verification
+          schema:
+            type: number
+            format: double
+            minimum: -180
+            maximum: 180
+          example: -73.9851
       responses:
         '200':
           description: Post details successfully retrieved
@@ -254,12 +360,26 @@ paths:
             type: string
             format: uuid
           example: 123e4567-e89b-12d3-a456-426614174002
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SaveApprovalRequest'
+        - name: latitude
+          in: header
+          required: true
+          description: User's current latitude for location verification
+          schema:
+            type: number
+            format: double
+            minimum: -90
+            maximum: 90
+          example: 40.7589
+        - name: longitude
+          in: header
+          required: true
+          description: User's current longitude for location verification
+          schema:
+            type: number
+            format: double
+            minimum: -180
+            maximum: 180
+          example: -73.9851
       responses:
         '204':
           description: Approval successfully created
@@ -292,12 +412,26 @@ paths:
             type: string
             format: uuid
           example: 123e4567-e89b-12d3-a456-426614174002
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DeleteApprovalRequest'
+        - name: latitude
+          in: header
+          required: true
+          description: User's current latitude for location verification
+          schema:
+            type: number
+            format: double
+            minimum: -90
+            maximum: 90
+          example: 40.7589
+        - name: longitude
+          in: header
+          required: true
+          description: User's current longitude for location verification
+          schema:
+            type: number
+            format: double
+            minimum: -180
+            maximum: 180
+          example: -73.9851
       responses:
         '204':
           description: Approval successfully deleted
@@ -402,7 +536,7 @@ paths:
       tags:
         - Comments
       parameters:
-        - name: commentUuid
+        - name: uuid
           in: path
           required: true
           description: UUID of the comment to soft delete
@@ -410,10 +544,26 @@ paths:
             type: string
             format: uuid
           example: 123e4567-e89b-12d3-a456-426614174003
-      requestBody:
-        required: true
-        content:
-          application/json:
+        - name: latitude
+          in: header
+          required: true
+          description: User's current latitude for location verification
+          schema:
+            type: number
+            format: double
+            minimum: -90
+            maximum: 90
+          example: 40.7589
+        - name: longitude
+          in: header
+          required: true
+          description: User's current longitude for location verification
+          schema:
+            type: number
+            format: double
+            minimum: -180
+            maximum: 180
+          example: -73.9851
             schema:
               $ref: '#/components/schemas/SoftDeleteCommentRequest'
       responses:
@@ -429,7 +579,7 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         '422':
           $ref: '#/components/responses/UnprocessableEntityError'
-  /profile/me:
+  /profiles/me:
     get:
       operationId: findProfileByUserId
       summary: Get current user's profile
@@ -478,7 +628,7 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         '422':
           $ref: '#/components/responses/UnprocessableEntityError'
-  /profile/{uuid}:
+  /profiles/{uuid}:
     get:
       operationId: findProfileByUuid
       summary: Get user profile by UUID
@@ -1250,6 +1400,22 @@ components:
               type: string
               description: Profile picture filename
               example: profile_12345.jpg
+            deletedAt:
+              type: string
+              nullable: true
+              format: date-time
+              description: Profile soft deletion timestamp
+              example: null
+            createdAt:
+              type: string
+              format: date-time
+              description: Profile creation timestamp
+              example: 2023-01-01T00:00:00Z
+            updatedAt:
+              type: string
+              format: date-time
+              description: Profile last update timestamp
+              example: 2023-01-01T00:00:00Z
         posts:
           type: array
           description: User's posts
@@ -1302,22 +1468,6 @@ components:
                 format: date-time
                 description: Comment creation timestamp
                 example: 2023-01-01T12:15:00Z
-        deletedAt:
-          type: string
-          nullable: true
-          format: date-time
-          description: Profile soft deletion timestamp
-          example: null
-        createdAt:
-          type: string
-          format: date-time
-          description: Profile creation timestamp
-          example: 2023-01-01T00:00:00Z
-        updatedAt:
-          type: string
-          format: date-time
-          description: Profile last update timestamp
-          example: 2023-01-01T00:00:00Z
     FindPostsInVicinityRequest:
       type: object
       required:

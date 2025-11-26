@@ -23,6 +23,7 @@ import { PostController } from './controllers/post.controller';
 import { SaveCommentService } from './services/save-comment.service';
 import { CommentController } from './controllers/comment.controller';
 import { SoftDeleteCommentService } from './services/soft-delete-comment.service';
+import { ApprovalController } from './controllers/approval.controller';
 
 const repositoryProviders: Provider[] = [
   {
@@ -114,7 +115,7 @@ const serviceProviders: Provider[] = [
 ];
 
 @Module({
-  controllers: [PostController, CommentController],
+  controllers: [PostController, CommentController, ApprovalController],
   providers: [...repositoryProviders, ...serviceProviders],
 })
 export class PostsModule {}
