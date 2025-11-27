@@ -7,18 +7,18 @@ export class FindPostByUuidService implements FindPostByUuidUseCase {
   constructor(private readonly postRepository: PostRepositoryInterface) {}
 
   async execute(payload: FindPostByUuidPort): Promise<FindPostByUuidResponse> {
-    const { longitude, latitude, uuid } = payload;
+    const { longitude, latitude, uuid, userId } = payload;
 
-    const result = await this.postRepository.findByUuidWithDetails(uuid);
+    const result = await this.postRepository.findByUuidWithDetails(uuid, userId);
     if (!result) throw new NotFoundException('Post not found');
 
-    const { post, approvalCount } = result;
+    const { post, approvalCount, isApproved } = result;
 
     if (!this.isUserNearPost(longitude, latitude, post.longitude, post.latitude)) {
       throw new ForbiddenException('User must be within 15 meters of the post');
     }
 
-    return { post, approvalCount };
+    return { post, approvalCount, isApproved };
   }
 
   private isUserNearPost(userLatitude: number, userLongitude: number, postLatitude: number, postLongitude: number): boolean {

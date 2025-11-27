@@ -15,16 +15,6 @@ import { User } from 'src/users/entities/user.entity';
 import { Comment } from './comment.entity';
 import { Approval } from './approval.entity';
 
-type PostData = {
-  title: string;
-  body: string;
-  latitude: number;
-  longitude: number;
-  imageName?: string;
-  userId: number;
-  videoName?: string;
-};
-
 @Entity('posts')
 @Index(['longitude', 'latitude'])
 export class Post {

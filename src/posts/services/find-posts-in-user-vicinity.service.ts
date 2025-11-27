@@ -15,11 +15,14 @@ export class FindPostsInUserVicinityService implements FindPostsInUserVicinityUs
   ) {}
 
   async execute(payload: FindPostsInUserVicinityPort): Promise<FindPostsInUserVicinityResponse> {
-    const { latitude, longitude, page = 1 } = payload;
+    const { latitude, longitude, userId, page = 1 } = payload;
+
+    console.log(longitude, latitude);
 
     const result = await this.postRepository.findInVicinity(
       { latitude: latitude, longitude: longitude },
       this.VICINITY_DISTANCE,
+      userId,
       page,
       this.DEFAULT_LIMIT,
     );
