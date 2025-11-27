@@ -14,14 +14,11 @@ export const databaseProviders: Array<Provider> = [
     useFactory: () => {
       const dataSource: DataSource = new DataSource({
         type: 'postgres',
-        host: process.env.POSTGRES_HOST,
-        port: parseInt(process.env.POSTGRES_PORT),
-        username: process.env.POSTGRES_USER,
-        password: process.env.POSTGRES_PASSWORD,
-        database: process.env.POSTGRES_DB_NAME,
+        url: process.env.DATABASE_URL,
         entities: [User, BlacklistedToken, Post, UserProfile, Comment, Approval],
-        synchronize: true,
+        synchronize: process.env.NODE_ENV !== 'production',
         logging: process.env.NODE_ENV === 'development',
+        ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
       });
 
       return dataSource.initialize();
