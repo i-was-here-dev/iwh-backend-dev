@@ -12,6 +12,9 @@ export class FindPostsInBoundingBoxService implements FindPostsInBoundingBoxUseC
   async execute(payload: FindPostsInBoundingBoxPort): Promise<Post[]> {
     const { latitude, longitude, boxWidth, boxLength } = payload;
 
+    console.log(latitude, longitude);
+    console.log(boxWidth, boxLength);
+
     const posts: Post[] = await this.postRepository.findInBoundingBox({
       centerLatitude: latitude,
       centerLongitude: longitude,
@@ -21,6 +24,8 @@ export class FindPostsInBoundingBoxService implements FindPostsInBoundingBoxUseC
     });
 
     if (!posts) throw new NotFoundException('Posts not found');
+
+    console.log(posts);
 
     return posts;
   }
