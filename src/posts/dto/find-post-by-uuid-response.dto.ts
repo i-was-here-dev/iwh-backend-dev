@@ -3,6 +3,7 @@ export class FindPostByUuidResponseDto {
     uuid: string;
     title: string;
     body: string;
+    location: string;
     latitude: number;
     longitude: number;
     imageName: string;

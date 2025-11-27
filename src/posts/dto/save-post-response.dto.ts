@@ -3,6 +3,7 @@ export class SavePostResponseDto {
     uuid: string;
     latitude: number;
     longitude: number;
+    location: string;
     title: string;
     body: string;
     videoName: string;

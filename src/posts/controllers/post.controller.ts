@@ -5,8 +5,6 @@ import { PostsDiTokens } from '../di/posts-tokens.di';
 import { UserData } from 'src/auth/decorators/user-data.decorator';
 import { JwtAuthGuardResponse } from 'src/auth/interfaces/jwt-auth-guard-response.interface';
 import { SavePostResponseDto } from '../dto/save-post-response.dto';
-import { SaveApprovalUseCase } from '../services/usecases/save-approval.usecase';
-import { DeleteApprovalUseCase } from '../services/usecases/delete-approval.usecase';
 import { FindPostByUuidUseCase } from '../services/usecases/find-post-by-uuid.usecase';
 import { FindPostByUuidResponseDto } from '../dto/find-post-by-uuid-response.dto';
 import { FindPostsInVicinityResponseDto } from '../dto/find-posts-in-vicinity-response.dto';
@@ -19,10 +17,6 @@ export class PostController {
   constructor(
     @Inject(PostsDiTokens.SavePostService)
     private readonly savePostService: SavePostUseCase,
-    @Inject(PostsDiTokens.SaveApprovalService)
-    private readonly saveApprovalService: SaveApprovalUseCase,
-    @Inject(PostsDiTokens.DeleteApprovalService)
-    private readonly deleteApprovalService: DeleteApprovalUseCase,
     @Inject(PostsDiTokens.FindPostByUuidService)
     private readonly findPostByUuidService: FindPostByUuidUseCase,
     @Inject(PostsDiTokens.FindPostsInUserVicinityService)
@@ -42,6 +36,7 @@ export class PostController {
       latitude: parseFloat(latitude),
       longitude: parseFloat(longitude),
       body: payload.body,
+      location: payload.location,
       title: payload.title,
       userId: user.id,
       imageName: payload.imageName,
@@ -51,6 +46,7 @@ export class PostController {
     return {
       post: {
         uuid: post.uuid,
+        location: post.location,
         longitude: post.longitude,
         latitude: post.latitude,
         title: post.title,
@@ -83,6 +79,7 @@ export class PostController {
         uuid: post.uuid,
         title: post.title,
         body: post.body,
+        location: post.location,
         latitude: post.latitude,
         longitude: post.longitude,
         imageName: post.imageName,
@@ -126,6 +123,7 @@ export class PostController {
         uuid: post.uuid,
         title: post.title,
         body: post.body,
+        location: post.location,
         latitude: post.latitude,
         longitude: post.longitude,
         imageName: post.imageName,
@@ -174,6 +172,7 @@ export class PostController {
         uuid: post.uuid,
         title: post.title,
         body: post.body,
+        location: post.location,
         latitude: post.latitude,
         longitude: post.longitude,
         imageName: post.imageName,

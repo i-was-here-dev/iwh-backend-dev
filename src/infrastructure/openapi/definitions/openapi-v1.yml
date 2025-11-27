@@ -130,29 +130,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - title
-                - body
-              properties:
-                title:
-                  type: string
-                  description: Post title
-                  example: "Beautiful sunset"
-                body:
-                  type: string
-                  description: Post content
-                  example: "Amazing view from the park"
-                imageName:
-                  type: string
-                  nullable: true
-                  description: Name of uploaded image file
-                  example: "sunset_12345.jpg"
-                videoName:
-                  type: string
-                  nullable: true
-                  description: Name of uploaded video file
-                  example: "sunset_12345.mp4"
+              $ref: '#components/schemas/SavePostRequest'
       responses:
         '201':
           description: Post successfully created
@@ -910,25 +888,10 @@ components:
     SavePostRequest:
       type: object
       required:
-        - latitude
-        - longitude
         - title
         - body
+        - location
       properties:
-        latitude:
-          type: number
-          format: float
-          minimum: -90
-          maximum: 90
-          description: Post location latitude
-          example: 40.7589
-        longitude:
-          type: number
-          format: float
-          minimum: -180
-          maximum: 180
-          description: Post location longitude
-          example: -73.9851
         title:
           type: string
           maxLength: 20
@@ -939,6 +902,10 @@ components:
           maxLength: 200
           description: Post content
           example: Amazing view from the top of the mountain
+        location:
+          type: string
+          description: Human-readable location description
+          example: Central Park, New York
         imageName:
           type: string
           description: Optional image filename
@@ -958,6 +925,14 @@ components:
               format: uuid
               description: Post UUID
               example: 123e4567-e89b-12d3-a456-426614174002
+            title:
+              type: string
+              description: Post title
+              example: Beautiful sunset
+            location:
+              type: string
+              description: Human-readable location description
+              example: Central Park, New York
             latitude:
               type: number
               format: float
@@ -968,10 +943,6 @@ components:
               format: float
               description: Post location longitude
               example: -73.9851
-            title:
-              type: string
-              description: Post title
-              example: Beautiful sunset
             body:
               type: string
               description: Post content
@@ -1002,9 +973,8 @@ components:
               format: date-time
               description: Post soft deletion timestamp
               example: null
-          format: date-time
-          description: Post soft deletion timestamp
-          example: null
+      required:
+        - post
     FindPostByUuidRequest:
       type: object
       required:
@@ -1037,6 +1007,10 @@ components:
               format: uuid
               description: Post UUID
               example: 123e4567-e89b-12d3-a456-426614174002
+            location:
+              type: string
+              description: Human-readable location description
+              example: Central Park, New York
             latitude:
               type: number
               format: float
@@ -1447,6 +1421,10 @@ components:
                 type: string
                 description: Post content
                 example: Amazing view from the top of the mountain
+              location:
+                type: string
+                description: Human-readable location description
+                example: Times Square, NYC
               latitude:
                 type: number
                 description: Post location latitude
@@ -1519,6 +1497,10 @@ components:
               type: string
               description: Post content
               example: Amazing view from the park
+            location:
+              type: string
+              description: Human-readable location description
+              example: Washington Square Park, NYC
             latitude:
               type: number
               format: float
@@ -1656,6 +1638,10 @@ components:
               type: string
               description: Post content
               example: Amazing view from the park
+            location:
+              type: string
+              description: Human-readable location description
+              example: Brooklyn Bridge Park, NYC
             latitude:
               type: number
               format: float
