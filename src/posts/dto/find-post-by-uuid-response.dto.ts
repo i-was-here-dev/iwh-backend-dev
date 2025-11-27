@@ -10,6 +10,7 @@ export class FindPostByUuidResponseDto {
     createdAt: Date;
     updatedAt: Date;
     deletedAt: Date;
+    isApproved: boolean;
   };
 
   creator: {

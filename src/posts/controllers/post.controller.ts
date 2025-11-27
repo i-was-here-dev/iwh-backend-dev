@@ -107,19 +107,67 @@ export class PostController {
     }));
   }
 
+  @Get('vicinity')
+  async findPostsInVicinity(
+    @Headers('latitude') latitude: string,
+    @Headers('longitude') longitude: string,
+    @UserData() user: JwtAuthGuardResponse,
+    @Query('page') page?: number,
+  ): Promise<FindPostsInVicinityResponseDto[]> {
+    const result = await this.findPostsInUserVicinityService.execute({
+      latitude: parseFloat(latitude),
+      longitude: parseFloat(longitude),
+      userId: user.id,
+      page: page || 1,
+    });
+
+    return result.map(({ post, approvalCount, commentCount, isApproved }) => ({
+      post: {
+        uuid: post.uuid,
+        title: post.title,
+        body: post.body,
+        latitude: post.latitude,
+        longitude: post.longitude,
+        imageName: post.imageName,
+        videoName: post.videoName,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+        deletedAt: post.deletedAt,
+        isApproved: isApproved,
+      },
+      creator: post.user
+        ? {
+            uuid: post.user.uuid,
+            profile: post.user.profile
+              ? {
+                  uuid: post.user.profile.uuid,
+                  nickname: post.user.profile.nickname,
+                  profilePictureName: post.user.profile.profilePictureName,
+                  points: post.user.profile.points,
+                }
+              : null,
+          }
+        : null,
+      approvalCount,
+      commentCount,
+    }));
+  }
+
   @Get(':uuid')
   async findPostByUuid(
     @Param('uuid') uuid: string,
     @Headers('latitude') latitude: string,
     @Headers('longitude') longitude: string,
+    @UserData() user: JwtAuthGuardResponse,
   ): Promise<FindPostByUuidResponseDto> {
     const result = await this.findPostByUuidService.execute({
       uuid: uuid,
       latitude: parseFloat(latitude),
       longitude: parseFloat(longitude),
+      userId: user.id,
     });
 
-    const { post, approvalCount } = result;
+    const { post, approvalCount, isApproved } = result;
 
     return {
       post: {
@@ -133,6 +181,7 @@ export class PostController {
         createdAt: post.createdAt,
         updatedAt: post.updatedAt,
         deletedAt: post.deletedAt,
+        isApproved: isApproved,
       },
       creator: post.user
         ? {
@@ -171,48 +220,5 @@ export class PostController {
         })) || [],
       approvalCount,
     };
-  }
-
-  @Get('vicinity')
-  async findPostsInVicinity(
-    @Headers('latitude') latitude: string,
-    @Headers('longitude') longitude: string,
-    @Query('page') page?: number,
-  ): Promise<FindPostsInVicinityResponseDto[]> {
-    const result = await this.findPostsInUserVicinityService.execute({
-      latitude: parseFloat(latitude),
-      longitude: parseFloat(longitude),
-      page: page || 1,
-    });
-
-    return result.map(({ post, approvalCount, commentCount }) => ({
-      post: {
-        uuid: post.uuid,
-        title: post.title,
-        body: post.body,
-        latitude: post.latitude,
-        longitude: post.longitude,
-        imageName: post.imageName,
-        videoName: post.videoName,
-        createdAt: post.createdAt,
-        updatedAt: post.updatedAt,
-        deletedAt: post.deletedAt,
-      },
-      creator: post.user
-        ? {
-            uuid: post.user.uuid,
-            profile: post.user.profile
-              ? {
-                  uuid: post.user.profile.uuid,
-                  nickname: post.user.profile.nickname,
-                  profilePictureName: post.user.profile.profilePictureName,
-                  points: post.user.profile.points,
-                }
-              : null,
-          }
-        : null,
-      approvalCount,
-      commentCount,
-    }));
   }
 }

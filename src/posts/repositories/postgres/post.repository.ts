@@ -1,5 +1,5 @@
 import { Post } from 'src/posts/entities/post.entity';
-import { Between, Repository, UpdateResult } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { PostRepositoryInterface } from '../post-repository.interface';
 import { BoundingBoxQuery } from 'src/posts/interfaces/bounding-box-query.interface';
 import { PointLocation } from 'src/posts/types/location.type';
@@ -25,11 +25,10 @@ export class PostRepository implements PostRepositoryInterface {
       where: {
         uuid: uuid,
       },
-      relations: ['post'],
     });
   }
 
-  async findByUuidWithDetails(uuid: string): Promise<{ post: Post; approvalCount: number } | null> {
+  async findByUuidWithDetails(uuid: string, userId: number): Promise<{ post: Post; approvalCount: number; isApproved: boolean } | null> {
     const result = await this.repository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.user', 'user')
@@ -39,7 +38,9 @@ export class PostRepository implements PostRepositoryInterface {
       .leftJoinAndSelect('commentUser.profile', 'commentUserProfile')
       .leftJoin('post.approvals', 'approvals')
       .addSelect('COUNT(approvals.id)', 'approvalCount')
+      .addSelect('COUNT(CASE WHEN approvals.userId = :userId THEN 1 END)', 'userApprovalCount')
       .where('post.uuid = :uuid', { uuid })
+      .setParameter('userId', userId)
       .groupBy('post.id, user.id, userProfile.id, comments.id, commentUser.id, commentUserProfile.id')
       .orderBy('comments.createdAt', 'ASC')
       .getRawAndEntities();
@@ -51,8 +52,11 @@ export class PostRepository implements PostRepositoryInterface {
     const post = result.entities[0];
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const approvalCount = parseInt(result.raw[0]?.approvalCount || '0', 10);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const userApprovalCount = parseInt(result.raw[0]?.userApprovalCount || '0', 10);
+    const isApproved = userApprovalCount > 0;
 
-    return { post, approvalCount };
+    return { post, approvalCount, isApproved };
   }
 
   async softDelete(post: Post): Promise<boolean> {
@@ -87,9 +91,10 @@ export class PostRepository implements PostRepositoryInterface {
   async findInVicinity(
     pointLocation: PointLocation,
     vicinityDistance: number,
+    userId: number,
     page: number = 1,
     limit: number = 5,
-  ): Promise<Array<{ post: Post; approvalCount: number; commentCount: number }> | null> {
+  ): Promise<Array<{ post: Post; approvalCount: number; commentCount: number; isApproved: boolean }> | null> {
     const offset = (page - 1) * limit;
 
     const result = await this.repository
@@ -100,6 +105,7 @@ export class PostRepository implements PostRepositoryInterface {
       .leftJoin('post.comments', 'comment')
       .addSelect('COUNT(DISTINCT approval.id)', 'approvalCount')
       .addSelect('COUNT(DISTINCT comment.id)', 'commentCount')
+      .addSelect('COUNT(CASE WHEN approval.userId = :userId THEN 1 END)', 'userApprovalCount')
       .where(
         `
         6371000 * acos(
@@ -114,6 +120,7 @@ export class PostRepository implements PostRepositoryInterface {
           latitude: pointLocation.latitude,
           longitude: pointLocation.longitude,
           distance: vicinityDistance, // distance in meters
+          userId: userId,
         },
       )
       .groupBy('post.id, user.id, profile.id')
@@ -130,11 +137,14 @@ export class PostRepository implements PostRepositoryInterface {
       const approvalCount = parseInt(result.raw[index]?.approvalCount || '0', 10);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const commentCount = parseInt(result.raw[index]?.commentCount || '0', 10);
-
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      const userApprovalCount = parseInt(result.raw[index]?.userApprovalCount || '0', 10);
+      const isApproved = userApprovalCount > 0;
       return {
         post,
         approvalCount,
         commentCount,
+        isApproved,
       };
     });
 

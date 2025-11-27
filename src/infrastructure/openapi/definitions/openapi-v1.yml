@@ -1075,6 +1075,16 @@ components:
               format: date-time
               description: Post last update timestamp
               example: 2025-11-24T10:30:00Z
+            deletedAt:
+              type: string
+              nullable: true
+              format: date-time
+              description: Post soft deletion timestamp
+              example: null
+            isApproved:
+              type: boolean
+              description: Whether the requesting user has approved this post
+              example: true
         creator:
           type: object
           description: User profile of the post creator
@@ -1545,6 +1555,10 @@ components:
               format: date-time
               description: Post soft deletion timestamp
               example: null
+            isApproved:
+              type: boolean
+              description: Whether the requesting user has approved this post
+              example: false
         creator:
           type: object
           description: Post creator information

@@ -10,6 +10,7 @@ export class FindPostsInVicinityResponseDto {
     createdAt: Date;
     updatedAt: Date;
     deletedAt: Date;
+    isApproved: boolean;
   };
 
   creator: {
