@@ -3,6 +3,7 @@ import { Post } from 'src/posts/entities/post.entity';
 
 export type SavePostPort = {
   userId: number;
+  location: string;
   latitude: number;
   longitude: number;
   body: string;

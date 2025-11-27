@@ -9,6 +9,9 @@ export class SavePostRequestDto {
   @IsNotEmpty()
   body: string;
 
+  @IsNotEmpty()
+  location: string;
+
   imageName?: string;
 
   videoName?: string;

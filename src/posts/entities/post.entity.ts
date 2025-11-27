@@ -53,6 +53,9 @@ export class Post {
   @Column({ name: 'video_name', nullable: true })
   videoName: string;
 
+  @Column({ name: 'location', nullable: true })
+  location: string;
+
   @Column({ name: 'latitude', type: 'float' })
   latitude: number;
 
