@@ -21,7 +21,7 @@ export class SaveCommentService implements SaveCommentUsecase {
 
     const distance = GeographyUtils.calculateDistance(userLatitude, userLongitude, post.latitude, post.longitude);
 
-    if (distance > 15) {
+    if (distance > 50) {
       throw new ForbiddenException('You are too far away from the post to comment');
     }
 
