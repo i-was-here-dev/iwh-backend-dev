@@ -11,7 +11,7 @@ export class FindPostsInUserVicinityService implements FindPostsInUserVicinityUs
   constructor(
     private readonly postRepository: PostRepositoryInterface,
     private readonly DEFAULT_LIMIT: number = 5,
-    private readonly VICINITY_DISTANCE: number = 15, // in meters
+    private readonly VICINITY_DISTANCE: number = 50, // in meters
   ) {}
 
   async execute(payload: FindPostsInUserVicinityPort): Promise<FindPostsInUserVicinityResponse> {

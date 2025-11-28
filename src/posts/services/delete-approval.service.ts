@@ -27,6 +27,6 @@ export class DeleteApprovalService implements DeleteApprovalService {
   }
 
   private isUserNearPost(userLatitude: number, userLongitude: number, postLatitude: number, postLongitude: number): boolean {
-    return GeographyUtils.calculateDistance(userLatitude, userLongitude, postLatitude, postLongitude) <= 15;
+    return GeographyUtils.calculateDistance(userLatitude, userLongitude, postLatitude, postLongitude) <= 50;
   }
 }

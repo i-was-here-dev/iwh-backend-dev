@@ -31,6 +31,6 @@ export class SaveApprovalService implements SaveApprovalUseCase {
   }
 
   private isUserNearPost(userLatitude: number, userLongitude: number, postLatitude: number, postLongitude: number): boolean {
-    return GeographyUtils.calculateDistance(userLatitude, userLongitude, postLatitude, postLongitude) <= 15;
+    return GeographyUtils.calculateDistance(userLatitude, userLongitude, postLatitude, postLongitude) <= 50;
   }
 }
